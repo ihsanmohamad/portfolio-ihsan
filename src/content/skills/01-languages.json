@@ -1,0 +1,6 @@
+{
+	"id": "languages",
+	"order": 1,
+	"category": "Languages",
+	"items": ["JavaScript", "TypeScript"]
+}

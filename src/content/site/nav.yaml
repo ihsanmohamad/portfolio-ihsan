@@ -1,0 +1,16 @@
+items:
+  - id: about
+    order: 1
+    label: About
+    path: /about
+    external: false
+  - id: projects
+    order: 2
+    label: Work
+    path: /projects
+    external: false
+  - id: blog
+    order: 3
+    label: Writing
+    path: /blog
+    external: false

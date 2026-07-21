@@ -1,0 +1,163 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	--font-sans: 'Space Grotesk', sans-serif;
+	--font-display: 'Syne', serif;
+
+	--color-brand-bg: #f8f7f4;
+	--color-brand-surface: #ffffff;
+	--color-brand-ink: #1a1a1a;
+	--color-brand-accent: #c9a86c;
+	--color-brand-border: #e5e3de;
+	--color-brand-muted: #555555;
+
+	--animate-marquee: marquee 25s linear infinite;
+	--animate-marquee-reverse: marquee 25s linear infinite reverse;
+	--animate-spin-slow: spin 20s linear infinite;
+	--animate-pulse-slow: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	--animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes marquee {
+	0% {
+		transform: translateX(0%);
+	}
+	100% {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes float {
+	0% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
+	100% {
+		transform: translateY(0px);
+	}
+}
+
+:root {
+	--cursor-size: 20px;
+}
+
+body {
+	background-color: #f8f7f4;
+	color: #1a1a1a;
+	cursor: default;
+	overflow-x: hidden;
+	font-family: 'Space Grotesk', sans-serif;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	z-index: -1;
+}
+
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: #f8f7f4;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #d4d2cd;
+	border-radius: 3px;
+}
+
+.text-outline {
+	-webkit-text-stroke: 1px rgba(26, 26, 26, 0.2);
+	color: transparent;
+}
+
+.prose {
+	color: #1a1a1a;
+}
+
+.prose h2 {
+	font-family: 'Syne', serif;
+	font-size: 1.875rem;
+	font-weight: 700;
+	margin-top: 3rem;
+	margin-bottom: 1.25rem;
+	letter-spacing: -0.01em;
+}
+
+.prose h3 {
+	font-family: 'Syne', serif;
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+}
+
+.prose p {
+	color: #555555;
+	line-height: 1.8;
+	margin-bottom: 1.25rem;
+	font-size: 1.0625rem;
+}
+
+.prose ul {
+	margin: 1.25rem 0;
+	padding-left: 1.5rem;
+	list-style: disc;
+	color: #555555;
+}
+
+.prose li {
+	margin-bottom: 0.5rem;
+	line-height: 1.7;
+}
+
+.prose a {
+	color: #c9a86c;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.prose a:hover {
+	color: #1a1a1a;
+}
+
+.prose strong {
+	color: #1a1a1a;
+	font-weight: 600;
+}
+
+.prose code {
+	background-color: #f8f7f4;
+	border: 1px solid #e5e3de;
+	padding: 0.125rem 0.375rem;
+	border-radius: 0.25rem;
+	font-size: 0.9em;
+	font-family: 'Courier New', monospace;
+}
+
+.prose pre {
+	background-color: #1a1a1a;
+	color: #f8f7f4;
+	padding: 1.25rem;
+	border-radius: 0.75rem;
+	overflow-x: auto;
+	margin: 1.5rem 0;
+}
+
+.prose pre code {
+	background: none;
+	border: none;
+	padding: 0;
+	color: inherit;
+}

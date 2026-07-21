@@ -1,0 +1,17 @@
+{
+	"id": "inspirenow",
+	"order": 3,
+	"company": "InspireNow SDN BHD",
+	"role": "Frontend Developer",
+	"location": "Kuala Lumpur",
+	"startDate": "2022-11",
+	"endDate": "2024-07",
+	"current": false,
+	"description": "Project lead for one of the company's flagship products — translating UI/UX design into robust, user-facing application interfaces.",
+	"bullets": [
+		"Responsible for the overall design and development of one of the projects as the project lead.",
+		"Collaborated closely with UI/UX designers to translate design concepts into functional and visually appealing user interfaces.",
+		"Experimented and implemented modern stacks for developing complex applications that fit the requirements."
+	],
+	"link": "https://inspirenow.com.my/"
+}

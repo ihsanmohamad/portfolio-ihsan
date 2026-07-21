@@ -1,0 +1,15 @@
+{
+	"id": "raudhahpay",
+	"order": 4,
+	"company": "RaudhahPay SDN BHD",
+	"role": "Junior Developer",
+	"location": "Cyberjaya",
+	"startDate": "2021-04",
+	"endDate": "2021-10",
+	"current": false,
+	"description": "Involved in backend and frontend development, including a payment integration for the company's flagship fintech product.",
+	"bullets": [
+		"Involved in backend and frontend development across the product stack.",
+		"Built and integrated payment flows for end-users."
+	]
+}

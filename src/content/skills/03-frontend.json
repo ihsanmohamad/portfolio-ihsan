@@ -1,0 +1,6 @@
+{
+	"id": "frontend",
+	"order": 3,
+	"category": "Frontend",
+	"items": ["ReactJS", "NextJS", "SvelteKit"]
+}

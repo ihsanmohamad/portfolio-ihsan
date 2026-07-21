@@ -1,0 +1,14 @@
+buildImage = 'ghcr.io/railwayapp/nixpacks:latest'
+deployImage = 'ghcr.io/railwayapp/nixpacks:latest'
+
+[variables]
+NODE_VERSION = '22'
+
+[phases.install]
+cmds = ['npm ci']
+
+[phases.build]
+cmds = ['npm run build']
+
+[start]
+cmd = 'npx --yes serve build -l ${PORT:-3000}'

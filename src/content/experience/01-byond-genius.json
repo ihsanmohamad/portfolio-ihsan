@@ -1,0 +1,18 @@
+{
+	"id": "byond-genius",
+	"order": 1,
+	"company": "Byond Genius Tech Sdn Bhd",
+	"role": "Developer",
+	"location": "Kamunting, Perak",
+	"startDate": "2025-08",
+	"endDate": null,
+	"current": true,
+	"description": "Designing and deploying an agentic AI platform supporting workflow orchestration, multi-step reasoning, and tool-based execution.",
+	"bullets": [
+		"Designed and deployed an agentic AI platform supporting workflow orchestration, multi-step reasoning, and tool-based execution.",
+		"Integrated Meta WhatsApp Business API (WABA) to automate customer interactions with webhook-driven message processing.",
+		"Built AI tools for knowledge retrieval, API execution, and structured action handling (handover, labeling, follow-ups).",
+		"Managed Docker-based deployments, server configuration, and production releases to ensure scalable and reliable environments."
+	],
+	"link": "https://byond.com.my/byond-genius-tech-sdn-bhd/"
+}

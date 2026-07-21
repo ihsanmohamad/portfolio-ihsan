@@ -1,0 +1,20 @@
+tagline: >-
+  Software developer building agentic AI platforms, payment systems, and AWS
+  architectures. Based in Malaysia, working remote-first.
+socials:
+  - id: linkedin
+    order: 1
+    label: LinkedIn
+    url: 'https://www.linkedin.com/in/ihsanmohamad13/'
+  - id: github
+    order: 2
+    label: GitHub
+    url: 'https://github.com/ihsanmohamad'
+  - id: website
+    order: 3
+    label: ihsanmohamad.com
+    url: 'https://ihsanmohamad.com'
+  - id: email
+    order: 4
+    label: Email
+    url: 'mailto:ihsanmohamad13@gmail.com'

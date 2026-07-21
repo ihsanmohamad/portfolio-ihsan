@@ -1,0 +1,6 @@
+{
+	"id": "cloud",
+	"order": 4,
+	"category": "Cloud & DevOps",
+	"items": ["AWS", "Docker", "Linux"]
+}

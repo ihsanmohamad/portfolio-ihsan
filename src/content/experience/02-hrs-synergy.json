@@ -1,0 +1,17 @@
+{
+	"id": "hrs-synergy",
+	"order": 2,
+	"company": "HRS Synergy Sdn Bhd",
+	"role": "Freelancer",
+	"location": "Remote",
+	"startDate": "2024-04",
+	"endDate": null,
+	"current": true,
+	"description": "Led end-to-end development of Palm Oil Plantation & Mill Management Systems covering FFB tracking, weighing, grading, processing, and production reporting.",
+	"bullets": [
+		"Led end-to-end development of Palm Oil Plantation & Mill Management Systems covering FFB tracking, weighing, grading, processing, and production reporting.",
+		"Worked closely with estate managers and senior stakeholders to digitize workflows and improve operational visibility and data accuracy.",
+		"Translated plantation and mill processes into structured system logic, dashboards, and operational reports.",
+		"Maintained and enhanced live systems to ensure stability for daily operational use."
+	]
+}

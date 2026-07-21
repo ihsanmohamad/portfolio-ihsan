@@ -1,0 +1,9 @@
+{
+	"id": "aws-saa",
+	"order": 1,
+	"title": "AWS Certified Solutions Architect — Associate",
+	"issuer": "Amazon Web Services (AWS)",
+	"issueDate": "December 2024",
+	"credentialUrl": "https://www.credly.com/badges/828a0c54-523c-4898-9e7b-c9178bede977",
+	"description": "Architecting scalable, cost-effective, and secure AWS solutions across core services — EC2, S3, RDS, Lambda, networking, and disaster recovery."
+}
