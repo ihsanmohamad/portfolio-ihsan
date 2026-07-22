@@ -1,19 +1,27 @@
 <script lang="ts">
 	import { Award, GraduationCap, Briefcase, Download } from '@lucide/svelte';
 	import { PROFILE, EXPERIENCE, CERTIFICATIONS, AWARDS, SKILLS } from '$lib/constants';
+	import { getI18nContext } from '$lib/i18n';
+
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 
 	function formatRange(start: string, end: string | null, current: boolean): string {
-		return `${start} – ${current ? 'Present' : (end ?? 'Now')}`;
+		return `${start} – ${current ? messages.common.present : (end ?? messages.common.now)}`;
 	}
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-20">
 	<div class="container mx-auto px-6 md:px-12">
-		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">About</p>
+		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">
+			{messages.about.eyebrow}
+		</p>
 		<h1
 			class="mb-12 font-display text-6xl leading-[0.9] font-bold tracking-tight text-brand-ink md:text-[100px]"
 		>
-			Builder at <br /><span class="font-normal italic">heart.</span>
+			{messages.about.heroStart} <br /><span class="font-normal italic"
+				>{messages.about.heroEmphasis}</span
+			>
 		</h1>
 	</div>
 </section>
@@ -23,14 +31,11 @@
 		<div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-12">
 			<div class="lg:col-span-7">
 				<p class="mb-12 font-display text-2xl leading-snug text-brand-ink md:text-3xl">
-					{PROFILE.summary} I'm based in {PROFILE.location}, work primarily in JavaScript and
-					TypeScript, and care deeply about shipping systems that are reliable enough to ignore.
+					{PROFILE.summary}
+					{messages.about.profileDetail(PROFILE.location)}
 				</p>
 				<p class="mb-12 text-lg leading-relaxed text-brand-muted">
-					My recent work sits at the intersection of agentic AI and enterprise — building platforms
-					that orchestrate LLMs, tools, and humans across real workflows (payments, customer
-					operations, plantation ops). Before that I led front-end teams and integrated payment
-					systems into early-stage fintech.
+					{messages.about.recentWork}
 				</p>
 
 				<div class="flex flex-wrap gap-3">
@@ -61,10 +66,11 @@
 		<div class="mb-16">
 			<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
 				<Briefcase class="mr-2 inline-block" size={14} />
-				Experience
+				{messages.common.experience}
 			</p>
 			<h2 class="font-display text-4xl font-bold text-brand-ink md:text-5xl">
-				Career <span class="font-normal italic">timeline.</span>
+				{messages.about.careerHeadingStart}
+				<span class="font-normal italic">{messages.about.careerHeadingEmphasis}</span>
 			</h2>
 		</div>
 
@@ -116,32 +122,35 @@
 			<div>
 				<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
 					<GraduationCap class="mr-2 inline-block" size={14} />
-					Education
+					{messages.about.education}
 				</p>
 				<h2 class="mb-10 font-display text-3xl font-bold text-brand-ink md:text-4xl">
-					Where I <span class="font-normal italic">learned.</span>
+					{messages.about.learningHeadingStart}
+					<span class="font-normal italic">{messages.about.learningHeadingEmphasis}</span>
 				</h2>
 				<div class="space-y-6">
 					<div class="rounded-2xl border border-brand-border bg-brand-bg p-6">
 						<p class="text-xs font-bold tracking-widest text-brand-accent uppercase">
-							Sep 2017 – Mar 2021
+							{messages.about.bachelorsDate}
 						</p>
 						<h3 class="mt-2 font-display text-xl font-bold text-brand-ink">
-							BSc Computer Science (Computer System and Networking)
+							{messages.about.bachelorsDegree}
 						</h3>
 						<p class="text-sm text-brand-muted">
-							University Malaya · CGPA <strong class="text-brand-ink">3.35</strong>
+							University Malaya · {messages.about.gradeLabel}
+							<strong class="text-brand-ink">3.35</strong>
 						</p>
 					</div>
 					<div class="rounded-2xl border border-brand-border bg-brand-bg p-6">
 						<p class="text-xs font-bold tracking-widest text-brand-accent uppercase">
-							Jun 2014 – Jun 2017
+							{messages.about.diplomaDate}
 						</p>
 						<h3 class="mt-2 font-display text-xl font-bold text-brand-ink">
-							Diploma in Information Technology (Networking)
+							{messages.about.diplomaDegree}
 						</h3>
 						<p class="text-sm text-brand-muted">
-							UngkuOmar Polytechnic · CGPA <strong class="text-brand-ink">3.69</strong>
+							UngkuOmar Polytechnic · {messages.about.gradeLabel}
+							<strong class="text-brand-ink">3.69</strong>
 						</p>
 					</div>
 				</div>
@@ -150,10 +159,11 @@
 			<div>
 				<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
 					<Award class="mr-2 inline-block" size={14} />
-					Skills
+					{messages.about.skills}
 				</p>
 				<h2 class="mb-10 font-display text-3xl font-bold text-brand-ink md:text-4xl">
-					What I <span class="font-normal italic">work with.</span>
+					{messages.about.skillsHeadingStart}
+					<span class="font-normal italic">{messages.about.skillsHeadingEmphasis}</span>
 				</h2>
 				<div class="space-y-4">
 					{#each SKILLS as group (group.id)}
@@ -183,10 +193,10 @@
 		<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 			<div>
 				<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
-					Certifications
+					{messages.about.certifications}
 				</p>
 				<h2 class="mb-10 font-display text-3xl font-bold text-brand-ink md:text-4xl">
-					Credentials.
+					{messages.about.credentials}
 				</h2>
 				<div class="space-y-6">
 					{#each CERTIFICATIONS as cert (cert.id)}
@@ -205,7 +215,7 @@
 										target="_blank"
 										class="text-xs font-bold tracking-widest text-brand-accent uppercase hover:underline"
 									>
-										View →
+										{messages.common.view} →
 									</a>
 								{/if}
 							</div>
@@ -216,9 +226,11 @@
 			</div>
 
 			<div>
-				<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">Awards</p>
+				<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
+					{messages.about.awards}
+				</p>
 				<h2 class="mb-10 font-display text-3xl font-bold text-brand-ink md:text-4xl">
-					Highlights.
+					{messages.about.highlights}
 				</h2>
 				<div class="space-y-6">
 					{#each AWARDS as award (award.id)}
@@ -244,16 +256,16 @@
 <section class="bg-brand-ink py-32 text-brand-bg">
 	<div class="container mx-auto px-6 text-center md:px-12">
 		<div class="mx-auto max-w-2xl">
-			<h2 class="mb-8 font-display text-4xl font-bold md:text-6xl">Want the full picture?</h2>
+			<h2 class="mb-8 font-display text-4xl font-bold md:text-6xl">{messages.about.fullPicture}</h2>
 			<p class="mb-12 text-lg text-brand-bg/60">
-				Reach out for a printed CV, references, or to talk through a project.
+				{messages.about.fullPictureDescription}
 			</p>
 			<a
 				href={`mailto:${PROFILE.email}`}
 				class="inline-flex items-center gap-3 rounded-full bg-brand-accent px-10 py-5 text-sm font-bold tracking-widest text-black uppercase transition-all duration-300 hover:bg-brand-bg hover:text-brand-ink"
 			>
 				<Download size={18} />
-				Request CV
+				{messages.about.requestCv}
 			</a>
 		</div>
 	</div>

@@ -1,19 +1,26 @@
 <script lang="ts">
 	import { ArrowRight, ExternalLink, Github } from '@lucide/svelte';
 	import { PROJECTS_SORTED } from '$lib/constants';
+	import { getI18nContext } from '$lib/i18n';
+
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
 	<div class="container mx-auto px-6 md:px-12">
-		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">Work</p>
+		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">
+			{messages.projects.eyebrow}
+		</p>
 		<h1
 			class="mb-12 font-display text-6xl leading-[0.9] font-bold tracking-tight text-brand-ink md:text-[100px]"
 		>
-			Selected <br /><span class="font-normal italic">projects.</span>
+			{messages.projects.heroStart} <br /><span class="font-normal italic"
+				>{messages.projects.heroEmphasis}</span
+			>
 		</h1>
 		<p class="max-w-2xl text-xl leading-relaxed text-brand-muted md:text-2xl">
-			Side projects, paid work, and open-source contributions. Each one is a real system I shipped
-			and supported — not a screenshot.
+			{messages.projects.intro}
 		</p>
 	</div>
 </section>
@@ -60,7 +67,7 @@
 								href={`/projects/${project.slug}`}
 								class="group inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-ink uppercase hover:text-brand-accent"
 							>
-								Read case study
+								{messages.projects.readCaseStudy}
 								<ArrowRight size={14} class="transition-transform group-hover:translate-x-1" />
 							</a>
 							{#if project.liveUrl}
@@ -71,7 +78,7 @@
 									class="inline-flex items-center gap-1 text-xs font-bold tracking-widest text-brand-muted uppercase hover:text-brand-accent"
 								>
 									<ExternalLink size={14} />
-									Live
+									{messages.common.live}
 								</a>
 							{/if}
 							{#if project.repoUrl}
@@ -82,7 +89,7 @@
 									class="inline-flex items-center gap-1 text-xs font-bold tracking-widest text-brand-muted uppercase hover:text-brand-accent"
 								>
 									<Github size={14} />
-									Repo
+									{messages.common.repository}
 								</a>
 							{/if}
 						</div>

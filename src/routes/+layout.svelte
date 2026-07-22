@@ -1,15 +1,36 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { NAV_ITEMS, PROFILE, SITE_FOOTER } from '$lib/constants';
+	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
+	import { isLocale, MESSAGES, setI18nContext, type I18nContext, type Locale } from '$lib/i18n';
 	import { Menu, X, ArrowRight, Mail, Phone, Github, Linkedin, Globe } from '@lucide/svelte';
 
 	let { children } = $props();
 
 	let isMobileMenuOpen = $state(false);
 	let scrolled = $state(false);
-	let isAdmin = $derived($page.url.pathname.startsWith('/admin'));
+	let locale = $state<Locale>('en');
+	let localeInitialized = false;
+	let isAdmin = $derived(page.url.pathname.startsWith('/admin'));
+	let messages = $derived(MESSAGES[locale]);
+
+	function setLocale(nextLocale: Locale) {
+		locale = nextLocale;
+	}
+
+	const i18n: I18nContext = {
+		get locale() {
+			return locale;
+		},
+		get messages() {
+			return messages;
+		},
+		setLocale
+	};
+
+	setI18nContext(i18n);
 
 	function handleScroll() {
 		scrolled = window.scrollY > 50;
@@ -24,7 +45,22 @@
 	});
 
 	$effect(() => {
-		const pathname = $page.url.pathname;
+		if (isAdmin || localeInitialized) return;
+
+		localeInitialized = true;
+		const storedLocale = localStorage.getItem('portfolio-locale');
+		if (isLocale(storedLocale)) locale = storedLocale;
+	});
+
+	$effect(() => {
+		if (isAdmin || !localeInitialized) return;
+
+		document.documentElement.lang = locale;
+		localStorage.setItem('portfolio-locale', locale);
+	});
+
+	$effect(() => {
+		const pathname = page.url.pathname;
 		isMobileMenuOpen = false;
 		if (typeof window !== 'undefined') {
 			window.scrollTo(0, 0);
@@ -33,7 +69,14 @@
 	});
 
 	function isActive(path: string): boolean {
-		return $page.url.pathname === path;
+		return page.url.pathname === path;
+	}
+
+	function navLabel(path: string, fallback: string): string {
+		if (path === '/about') return messages.nav.about;
+		if (path === '/projects') return messages.nav.work;
+		if (path === '/blog') return messages.nav.writing;
+		return fallback;
 	}
 
 	function socialIcon(label: string) {
@@ -107,9 +150,10 @@
 								? 'text-brand-accent'
 								: 'text-brand-muted'}"
 					>
-						{item.label}
+						{navLabel(item.path, item.label)}
 					</a>
 				{/each}
+				<LanguageToggle />
 				<a
 					href={`mailto:${PROFILE.email}`}
 					class="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-brand-ink/20 px-8 py-3 text-xs font-bold tracking-widest text-brand-ink uppercase transition duration-300 ease-out"
@@ -122,15 +166,16 @@
 					<span
 						class="absolute flex h-full w-full transform items-center justify-center text-brand-ink transition-all duration-300 group-hover:translate-x-full"
 					>
-						Hire me
+						{messages.nav.hireMe}
 					</span>
-					<span class="invisible relative">Hire me</span>
+					<span class="invisible relative">{messages.nav.hireMe}</span>
 				</a>
 			</div>
 
 			<button
+				type="button"
 				class="text-brand-ink md:hidden"
-				aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+				aria-label={isMobileMenuOpen ? messages.nav.closeMenu : messages.nav.openMenu}
 				aria-expanded={isMobileMenuOpen}
 				onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
 			>
@@ -150,15 +195,16 @@
 		class:overflow-hidden={isMobileMenuOpen}
 	>
 		<button
+			type="button"
 			class="absolute top-6 right-6 text-brand-ink"
-			aria-label="Close menu"
+			aria-label={messages.nav.closeMenu}
 			onclick={() => (isMobileMenuOpen = false)}
 		>
 			<X size={32} />
 		</button>
 		<div class="flex flex-col space-y-6 text-center">
 			<a href="/" class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
-				>Home</a
+				>{messages.nav.home}</a
 			>
 			{#each NAV_ITEMS as item (item.path)}
 				<a
@@ -167,10 +213,15 @@
 					target={item.external ? '_blank' : undefined}
 					class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>
-					{item.label}
+					{navLabel(item.path, item.label)}
 				</a>
 			{/each}
-			<a href={`mailto:${PROFILE.email}`} class="mt-8 text-xl text-brand-accent">Get in touch</a>
+			<div class="mt-2">
+				<LanguageToggle />
+			</div>
+			<a href={`mailto:${PROFILE.email}`} class="mt-8 text-xl text-brand-accent"
+				>{messages.nav.getInTouch}</a
+			>
 		</div>
 	</div>
 
@@ -213,12 +264,12 @@
 				</div>
 				<div>
 					<h3 class="mb-6 text-xs font-bold tracking-widest text-brand-ink uppercase">
-						Navigation
+						{messages.nav.navigation}
 					</h3>
 					<ul class="space-y-4">
 						<li>
 							<a href="/" class="text-sm text-brand-muted transition-colors hover:text-brand-accent"
-								>Home</a
+								>{messages.nav.home}</a
 							>
 						</li>
 						{#each NAV_ITEMS as item (item.path)}
@@ -229,14 +280,16 @@
 									target={item.external ? '_blank' : undefined}
 									class="text-sm text-brand-muted transition-colors hover:text-brand-accent"
 								>
-									{item.label}
+									{navLabel(item.path, item.label)}
 								</a>
 							</li>
 						{/each}
 					</ul>
 				</div>
 				<div>
-					<h3 class="mb-6 text-xs font-bold tracking-widest text-brand-ink uppercase">Connect</h3>
+					<h3 class="mb-6 text-xs font-bold tracking-widest text-brand-ink uppercase">
+						{messages.nav.connect}
+					</h3>
 					<ul class="space-y-4">
 						{#each SITE_FOOTER.socials as link (link.url)}
 							{@const Icon = socialIcon(link.label)}
@@ -259,7 +312,10 @@
 			<div
 				class="flex flex-col items-center justify-between border-t border-brand-border pt-8 text-xs font-medium tracking-wide text-brand-muted md:flex-row"
 			>
-				<p>&copy; {new Date().getFullYear()} {PROFILE.name.toUpperCase()}. ALL RIGHTS RESERVED.</p>
+				<p>
+					&copy; {new Date().getFullYear()}
+					{PROFILE.name.toUpperCase()}. {messages.nav.allRightsReserved}
+				</p>
 				<div class="mt-4 flex gap-8 md:mt-0">
 					<a href="/admin" class="transition-colors hover:text-brand-ink">CMS</a>
 				</div>

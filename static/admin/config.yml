@@ -20,6 +20,13 @@ media_libraries:
           width: 2000
           height: 2000
 
+i18n:
+  structure: multiple_folders
+  locales: [en, ms-MY]
+  default_locale: en
+  initial_locales: [en, ms-MY]
+  omit_default_locale_from_file_path: true
+
 output:
   omit_empty_optional_fields: true
   yaml:
@@ -34,54 +41,60 @@ singletons:
   - name: profile
     label: Profile
     icon: user
-    file: /src/content/site/profile.yaml
+    file: /src/content/site/{{locale}}/profile.yaml
+    i18n: true
     fields:
-      - { name: name, label: Name, widget: string, required: true }
-      - { name: tagline, label: Tagline, widget: string, required: true, hint: 'Short headline, e.g. "Software Developer".' }
-      - { name: location, label: Location, widget: string, required: true }
-      - { name: email, label: Email, widget: string, required: true }
-      - { name: phone, label: Phone, widget: string, required: false }
-      - { name: website, label: Website, widget: string, required: false }
-      - { name: summary, label: Summary, widget: text, required: true }
+      - { name: name, label: Name, widget: string, required: true, i18n: duplicate }
+      - { name: tagline, label: Tagline, widget: string, required: true, hint: 'Short headline, e.g. "Software Developer".', i18n: true }
+      - { name: location, label: Location, widget: string, required: true, i18n: true }
+      - { name: email, label: Email, widget: string, required: true, i18n: duplicate }
+      - { name: phone, label: Phone, widget: string, required: false, i18n: duplicate }
+      - { name: website, label: Website, widget: string, required: false, i18n: duplicate }
+      - { name: summary, label: Summary, widget: text, required: true, i18n: true }
       - name: languages
         label: Languages
         widget: list
-        field: { name: language, label: Language, widget: string }
+        i18n: duplicate
+        field: { name: language, label: Language, widget: string, i18n: duplicate }
 
   - name: site_nav
     label: Site Navigation
     icon: menu
-    file: /src/content/site/nav.yaml
+    file: /src/content/site/{{locale}}/nav.yaml
+    i18n: true
     fields:
       - name: items
         label: Menu Items
         label_singular: Menu Item
         widget: list
+        i18n: true
         hint: Drag to reorder. Click the three-dot menu to edit the slug.
         summary: '{{fields.label}} — {{fields.path}}'
         fields:
-          - { name: id, widget: hidden, default: '{{uuid}}' }
-          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-          - { name: label, label: Label, widget: string, required: true }
-          - { name: path, label: Path, widget: string, required: true, pattern: ['^/[A-Za-z0-9/_\-]+$', 'Use a path starting with /, like /about.'] }
-          - { name: external, label: External, widget: boolean, default: false }
+          - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+          - { name: label, label: Label, widget: string, required: true, i18n: true }
+          - { name: path, label: Path, widget: string, required: true, pattern: ['^/[A-Za-z0-9/_\-]+$', 'Use a path starting with /, like /about.'], i18n: duplicate }
+          - { name: external, label: External, widget: boolean, default: false, i18n: duplicate }
 
   - name: site_footer
     label: Site Footer
     icon: anchor
-    file: /src/content/site/footer.yaml
+    file: /src/content/site/{{locale}}/footer.yaml
+    i18n: true
     fields:
-      - { name: tagline, label: Tagline, widget: text, required: true }
+      - { name: tagline, label: Tagline, widget: text, required: true, i18n: true }
       - name: socials
         label: Social Links
         label_singular: Social Link
         widget: list
+        i18n: duplicate
         summary: '{{fields.label}} — {{fields.url}}'
         fields:
-          - { name: id, widget: hidden, default: '{{uuid}}' }
-          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-          - { name: label, label: Label, widget: string, required: true }
-          - { name: url, label: URL, widget: string, required: true, pattern: ['^(https?:|mailto:|/)[^\\s]+$', 'Provide a full URL (https://...), a mailto:, or a site path (/contact).'] }
+          - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+          - { name: label, label: Label, widget: string, required: true, i18n: duplicate }
+          - { name: url, label: URL, widget: string, required: true, pattern: ['^(https?:|mailto:|/)[^\\s]+$', 'Provide a full URL (https://...), a mailto:, or a site path (/contact).'], i18n: duplicate }
 
 collections:
   - name: experience
@@ -89,24 +102,26 @@ collections:
     label_singular: Experience Entry
     folder: /src/content/experience
     format: json
+    i18n: true
     identifier_field: company
     slug: '{{fields._slug}}'
     summary: '{{role}} — {{company}} ({{startDate}} – {{endDate}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-      - { name: company, label: Company, widget: string, required: true }
-      - { name: role, label: Role, widget: string, required: true }
-      - { name: location, label: Location, widget: string, required: true }
-      - { name: startDate, label: Start Date, widget: string, required: true, hint: 'YYYY-MM, e.g. 2025-08' }
-      - { name: endDate, label: End Date, widget: string, required: false, hint: 'YYYY-MM or leave empty if current' }
-      - { name: current, label: Current Role, widget: boolean, default: false }
-      - { name: description, label: Description, widget: text, required: true }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+      - { name: company, label: Company, widget: string, required: true, i18n: duplicate }
+      - { name: role, label: Role, widget: string, required: true, i18n: true }
+      - { name: location, label: Location, widget: string, required: true, i18n: true }
+      - { name: startDate, label: Start Date, widget: string, required: true, hint: 'YYYY-MM, e.g. 2025-08', i18n: duplicate }
+      - { name: endDate, label: End Date, widget: string, required: false, hint: 'YYYY-MM or leave empty if current', i18n: duplicate }
+      - { name: current, label: Current Role, widget: boolean, default: false, i18n: duplicate }
+      - { name: description, label: Description, widget: text, required: true, i18n: true }
       - name: bullets
         label: Highlights
         widget: list
-        field: { name: bullet, label: Bullet, widget: text }
-      - { name: link, label: Company Link, widget: string, required: false }
+        i18n: true
+        field: { name: bullet, label: Bullet, widget: text, i18n: true }
+      - { name: link, label: Company Link, widget: string, required: false, i18n: duplicate }
 
   - name: projects
     label: Projects
@@ -114,78 +129,84 @@ collections:
     folder: /src/content/projects
     extension: md
     format: yaml-frontmatter
+    i18n: true
     identifier_field: title
     slug: '{{fields._slug}}'
     preview_path: '/projects/{{slug}}'
     summary: '{{title}} — {{category}} ({{year}})'
     thumbnail: imageUrl
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-      - { name: title, label: Title, widget: string, required: true }
-      - { name: category, label: Category, widget: string, required: true }
-      - { name: year, label: Year, widget: string, required: true, pattern: ['^20[0-9]{2}$', 'Use a four-digit year, e.g. 2024.'] }
-      - { name: shortDescription, label: Short Description, widget: text, required: true }
-      - { name: imageUrl, label: Image, widget: image, required: false }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+      - { name: title, label: Title, widget: string, required: true, i18n: true }
+      - { name: category, label: Category, widget: string, required: true, i18n: true }
+      - { name: year, label: Year, widget: string, required: true, pattern: ['^20[0-9]{2}$', 'Use a four-digit year, e.g. 2024.'], i18n: duplicate }
+      - { name: shortDescription, label: Short Description, widget: text, required: true, i18n: true }
+      - { name: imageUrl, label: Image, widget: image, required: false, i18n: duplicate }
       - name: tech
         label: Tech Stack
         widget: list
-        field: { name: item, label: Item, widget: string }
-      - { name: liveUrl, label: Live URL, widget: string, required: false }
-      - { name: repoUrl, label: Repo URL, widget: string, required: false }
-      - { name: featured, label: Featured, widget: boolean, default: false }
-      - { name: body, label: Case Study, widget: richtext, required: true }
+        i18n: duplicate
+        field: { name: item, label: Item, widget: string, i18n: duplicate }
+      - { name: liveUrl, label: Live URL, widget: string, required: false, i18n: duplicate }
+      - { name: repoUrl, label: Repo URL, widget: string, required: false, i18n: duplicate }
+      - { name: featured, label: Featured, widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Case Study, widget: richtext, required: true, i18n: true }
 
   - name: certifications
     label: Certifications
     label_singular: Certification
     folder: /src/content/certifications
     format: json
+    i18n: true
     identifier_field: title
     slug: '{{fields._slug}}'
     summary: '{{title}} — {{issuer}} ({{issueDate}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-      - { name: title, label: Title, widget: string, required: true }
-      - { name: issuer, label: Issuer, widget: string, required: true }
-      - { name: issueDate, label: Issue Date, widget: string, required: true, hint: 'Month YYYY, e.g. December 2024' }
-      - { name: credentialUrl, label: Credential URL, widget: string, required: false }
-      - { name: description, label: Description, widget: text, required: true }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+      - { name: title, label: Title, widget: string, required: true, i18n: true }
+      - { name: issuer, label: Issuer, widget: string, required: true, i18n: duplicate }
+      - { name: issueDate, label: Issue Date, widget: string, required: true, hint: 'Month YYYY, e.g. December 2024', i18n: duplicate }
+      - { name: credentialUrl, label: Credential URL, widget: string, required: false, i18n: duplicate }
+      - { name: description, label: Description, widget: text, required: true, i18n: true }
 
   - name: awards
     label: Awards
     label_singular: Award
     folder: /src/content/awards
     format: json
+    i18n: true
     identifier_field: title
     slug: '{{fields._slug}}'
     summary: '{{title}} — {{issuer}} ({{date}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-      - { name: title, label: Title, widget: string, required: true }
-      - { name: issuer, label: Issuer, widget: string, required: true }
-      - { name: date, label: Date, widget: string, required: true, hint: 'Month YYYY, e.g. October 2022' }
-      - { name: achievement, label: Achievement, widget: string, required: false, hint: 'e.g. First-Runner Up' }
-      - { name: description, label: Description, widget: text, required: true }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+      - { name: title, label: Title, widget: string, required: true, i18n: true }
+      - { name: issuer, label: Issuer, widget: string, required: true, i18n: duplicate }
+      - { name: date, label: Date, widget: string, required: true, i18n: duplicate }
+      - { name: achievement, label: Achievement, widget: string, required: false, hint: 'e.g. First-Runner Up', i18n: true }
+      - { name: description, label: Description, widget: text, required: true, i18n: true }
 
   - name: skills
     label: Skills
     label_singular: Skill Group
     folder: /src/content/skills
     format: json
+    i18n: true
     identifier_field: category
     slug: '{{fields._slug}}'
     summary: '{{category}} ({{items.length}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1 }
-      - { name: category, label: Category, widget: string, required: true, hint: 'e.g. Languages, Frameworks, Cloud' }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
+      - { name: category, label: Category, widget: string, required: true, hint: 'e.g. Languages, Frameworks, Cloud', i18n: true }
       - name: items
         label: Skills
         widget: list
-        field: { name: skill, label: Skill, widget: string }
+        i18n: duplicate
+        field: { name: skill, label: Skill, widget: string, i18n: duplicate }
 
   - name: posts
     label: Blog Posts
@@ -193,19 +214,20 @@ collections:
     folder: /src/content/posts
     extension: md
     format: yaml-frontmatter
+    i18n: true
     identifier_field: title
     slug: '{{fields._slug}}'
     preview_path: '/blog/{{slug}}'
     summary: '{{title}} — {{publishedAt}}'
     thumbnail: imageUrl
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}' }
-      - { name: title, label: Title, widget: string, required: true }
-      - { name: publishedAt, label: Published Date, widget: datetime, type: date, required: true, default: '{{now}}' }
-      - { name: category, label: Category, widget: string, required: true }
-      - { name: author, label: Author, widget: string, default: 'Ihsan Mohamad' }
-      - { name: readingMinutes, label: Reading Time, widget: number, value_type: int, min: 1, max: 60, default: 5 }
-      - { name: excerpt, label: Excerpt, widget: text, required: true }
-      - { name: imageUrl, label: Cover Image, widget: image, required: false }
-      - { name: featured, label: Featured, widget: boolean, default: false }
-      - { name: body, label: Article, widget: richtext, required: true }
+      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
+      - { name: title, label: Title, widget: string, required: true, i18n: true }
+      - { name: publishedAt, label: Published Date, widget: datetime, type: date, required: true, default: '{{now}}', i18n: duplicate }
+      - { name: category, label: Category, widget: string, required: true, i18n: true }
+      - { name: author, label: Author, widget: string, default: 'Ihsan Mohamad', i18n: duplicate }
+      - { name: readingMinutes, label: Reading Time, widget: number, value_type: int, min: 1, max: 60, default: 5, i18n: duplicate }
+      - { name: excerpt, label: Excerpt, widget: text, required: true, i18n: true }
+      - { name: imageUrl, label: Cover Image, widget: image, required: false, i18n: duplicate }
+      - { name: featured, label: Featured, widget: boolean, default: false, i18n: duplicate }
+      - { name: body, label: Article, widget: richtext, required: true, i18n: true }

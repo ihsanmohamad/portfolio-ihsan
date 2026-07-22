@@ -1,19 +1,25 @@
 <script lang="ts">
 	import { Mail, MapPin, Phone, Github, Linkedin } from '@lucide/svelte';
 	import { PROFILE, SITE_FOOTER } from '$lib/constants';
+	import { getI18nContext } from '$lib/i18n';
+
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
 	<div class="container mx-auto px-6 md:px-12">
-		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">Contact</p>
+		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">
+			{messages.contact.eyebrow}
+		</p>
 		<h1
 			class="mb-12 font-display text-6xl leading-[0.9] font-bold tracking-tight text-brand-ink md:text-[100px]"
 		>
-			Say <span class="font-normal italic">hello.</span>
+			{messages.contact.heroStart}
+			<span class="font-normal italic">{messages.contact.heroEmphasis}</span>
 		</h1>
 		<p class="max-w-2xl text-xl leading-relaxed text-brand-muted">
-			Open to interesting projects, freelance contracts, and full-time roles in AI engineering, AWS
-			architecture, or full-stack TypeScript. I usually reply within a day.
+			{messages.contact.intro}
 		</p>
 	</div>
 </section>
@@ -33,7 +39,9 @@
 							<Mail size={20} />
 						</div>
 						<div>
-							<p class="mb-1 text-xs font-bold tracking-widest text-brand-muted uppercase">Email</p>
+							<p class="mb-1 text-xs font-bold tracking-widest text-brand-muted uppercase">
+								{messages.contact.email}
+							</p>
 							<p
 								class="font-display text-xl font-bold text-brand-ink group-hover:text-brand-accent"
 							>
@@ -54,7 +62,7 @@
 							</div>
 							<div>
 								<p class="mb-1 text-xs font-bold tracking-widest text-brand-muted uppercase">
-									Phone
+									{messages.contact.phone}
 								</p>
 								<p
 									class="font-display text-xl font-bold text-brand-ink group-hover:text-brand-accent"
@@ -73,7 +81,7 @@
 						</div>
 						<div>
 							<p class="mb-1 text-xs font-bold tracking-widest text-brand-muted uppercase">
-								Based in
+								{messages.contact.basedIn}
 							</p>
 							<p class="font-display text-xl font-bold text-brand-ink">{PROFILE.location}</p>
 						</div>
@@ -84,7 +92,7 @@
 			<div class="lg:col-span-5">
 				<div class="rounded-2xl border border-brand-border bg-white p-8">
 					<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
-						Around the web
+						{messages.contact.aroundTheWeb}
 					</p>
 					<div class="space-y-3">
 						{#each SITE_FOOTER.socials as link (link.url)}

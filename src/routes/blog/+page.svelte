@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { ArrowRight } from '@lucide/svelte';
+	import { getI18nContext } from '$lib/i18n';
+
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 
 	type PostMeta = {
 		id: string;
@@ -35,14 +39,18 @@
 
 <section class="border-b border-brand-border pt-32 pb-16">
 	<div class="container mx-auto px-6 md:px-12">
-		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">Writing</p>
+		<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">
+			{messages.blog.eyebrow}
+		</p>
 		<h1
 			class="mb-12 font-display text-6xl leading-[0.9] font-bold tracking-tight text-brand-ink md:text-[100px]"
 		>
-			Notes & <br /><span class="font-normal italic">writing.</span>
+			{messages.blog.heroStart} <br /><span class="font-normal italic"
+				>{messages.blog.heroEmphasis}</span
+			>
 		</h1>
 		<p class="max-w-2xl text-xl leading-relaxed text-brand-muted">
-			Articles on AI engineering, AWS architecture, and building things that actually ship.
+			{messages.blog.intro}
 		</p>
 	</div>
 </section>
@@ -51,9 +59,9 @@
 	<div class="container mx-auto px-6 md:px-12">
 		{#if posts.length === 0}
 			<div class="rounded-2xl border border-dashed border-brand-border bg-white p-16 text-center">
-				<p class="mb-3 font-display text-2xl font-bold text-brand-ink">No posts yet</p>
+				<p class="mb-3 font-display text-2xl font-bold text-brand-ink">{messages.blog.noPosts}</p>
 				<p class="text-brand-muted">
-					Publishing here soon. In the meantime, find me on
+					{messages.blog.noPostsDescription}
 					<a
 						href="https://www.linkedin.com/in/ihsanmohamad13/"
 						class="text-brand-accent hover:underline">LinkedIn</a
@@ -78,7 +86,7 @@
 						<p class="mb-4 text-sm text-brand-muted">{post.excerpt}</p>
 						<div class="flex items-center justify-between text-xs text-brand-muted">
 							<span>{post.publishedAt}</span>
-							<span>{post.readingMinutes} min read</span>
+							<span>{post.readingMinutes} {messages.blog.minuteRead}</span>
 						</div>
 						<ArrowRight
 							size={16}

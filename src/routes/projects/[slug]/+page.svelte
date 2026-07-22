@@ -1,10 +1,13 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import { ArrowRight, ArrowLeft, ExternalLink, Github, Calendar } from '@lucide/svelte';
+	import { getI18nContext } from '$lib/i18n';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 	const Markdown = $derived(data.component as Component | undefined);
 </script>
 
@@ -15,7 +18,7 @@
 			class="mb-8 inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-muted uppercase hover:text-brand-accent"
 		>
 			<ArrowLeft size={14} />
-			Back to all work
+			{messages.project.backToAll}
 		</a>
 		<div class="grid grid-cols-1 items-end gap-8 lg:grid-cols-3">
 			<div class="lg:col-span-2">
@@ -38,7 +41,9 @@
 				</div>
 				{#if data.project.tech.length > 0}
 					<div>
-						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">Stack</p>
+						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">
+							{messages.common.stack}
+						</p>
 						<div class="flex flex-wrap gap-2">
 							{#each data.project.tech as item (item)}
 								<span
@@ -60,7 +65,7 @@
 								class="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-ink uppercase hover:text-brand-accent"
 							>
 								<ExternalLink size={14} />
-								Visit live
+								{messages.project.visitLive}
 							</a>
 						{/if}
 						{#if data.project.repoUrl}
@@ -71,7 +76,7 @@
 								class="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-ink uppercase hover:text-brand-accent"
 							>
 								<Github size={14} />
-								Source
+								{messages.common.source}
 							</a>
 						{/if}
 					</div>
@@ -102,7 +107,7 @@
 						class="group block rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 					>
 						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">
-							Previous
+							{messages.project.previous}
 						</p>
 						<p
 							class="flex items-center gap-3 font-display text-2xl font-bold text-brand-ink group-hover:text-brand-accent"
@@ -119,7 +124,9 @@
 						href={`/projects/${data.next.slug}`}
 						class="group block rounded-2xl border border-brand-border bg-white p-6 text-right transition-colors hover:border-brand-accent"
 					>
-						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">Next</p>
+						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">
+							{messages.project.next}
+						</p>
 						<p
 							class="inline-flex items-center gap-3 font-display text-2xl font-bold text-brand-ink group-hover:text-brand-accent"
 						>

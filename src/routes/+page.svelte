@@ -8,7 +8,10 @@
 		AWARDS,
 		SKILLS
 	} from '$lib/constants';
+	import { getI18nContext } from '$lib/i18n';
 
+	const i18n = getI18nContext();
+	const messages = $derived(i18n.messages);
 	const currentRole = EXPERIENCE.find((e) => e.current);
 </script>
 
@@ -31,14 +34,14 @@
 			{#if currentRole}
 				<div class="mb-12 rounded-2xl border border-brand-border bg-white p-6 md:p-8">
 					<p class="mb-2 text-xs font-bold tracking-widest text-brand-accent uppercase">
-						Currently
+						{messages.home.currently}
 					</p>
 					<p class="font-display text-xl font-bold md:text-2xl">
 						{currentRole.role} <span class="text-brand-muted">@</span>
 						{currentRole.company}
 					</p>
 					<p class="mt-1 text-sm text-brand-muted">
-						{currentRole.location} · {currentRole.startDate} – Present
+						{currentRole.location} · {currentRole.startDate} – {messages.common.present}
 					</p>
 				</div>
 			{/if}
@@ -48,7 +51,7 @@
 					href={`mailto:${PROFILE.email}`}
 					class="group flex items-center gap-4 rounded-full bg-brand-ink px-8 py-4 text-sm font-bold tracking-widest text-brand-bg uppercase transition-all duration-300 hover:bg-brand-accent hover:text-black"
 				>
-					Get in touch
+					{messages.nav.getInTouch}
 					<span
 						class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-accent text-black transition-all duration-300 group-hover:bg-brand-bg"
 					>
@@ -84,17 +87,17 @@
 			<div class="mb-16 flex items-end justify-between">
 				<div>
 					<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
-						Selected Projects
+						{messages.home.selectedProjects}
 					</p>
 					<h2 class="font-display text-4xl font-bold text-brand-ink md:text-5xl">
-						Things I've built.
+						{messages.home.thingsBuilt}
 					</h2>
 				</div>
 				<a
 					href="/projects"
 					class="text-xs font-bold tracking-widest text-brand-accent uppercase underline-offset-8 hover:underline"
 				>
-					View All Works
+					{messages.home.viewAllWorks}
 				</a>
 			</div>
 
@@ -139,13 +142,15 @@
 <section class="border-t border-brand-border py-32">
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="mb-16 max-w-3xl">
-			<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">Stack</p>
+			<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
+				{messages.common.stack}
+			</p>
 			<h2 class="mb-6 font-display text-4xl font-bold text-brand-ink md:text-5xl">
-				Tools I reach <span class="font-normal italic">for first.</span>
+				{messages.home.toolsHeadingStart}
+				<span class="font-normal italic">{messages.home.toolsHeadingEmphasis}</span>
 			</h2>
 			<p class="text-lg text-brand-muted">
-				Pragmatic choices over religious ones — these are the technologies I know best and trust
-				most in production.
+				{messages.home.toolsDescription}
 			</p>
 		</div>
 
@@ -170,9 +175,12 @@
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 			<div>
-				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">Experience</p>
+				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">
+					{messages.common.experience}
+				</p>
 				<h2 class="mb-10 font-display text-4xl font-bold md:text-5xl">
-					Where I've <span class="font-normal italic">worked.</span>
+					{messages.home.whereWorkedStart}
+					<span class="font-normal italic">{messages.home.whereWorkedEmphasis}</span>
 				</h2>
 
 				<div class="space-y-8">
@@ -180,7 +188,9 @@
 						<div>
 							<p class="mb-1 font-display text-xl font-bold">{job.role}</p>
 							<p class="text-sm text-brand-bg/70">
-								{job.company} · {job.startDate} – {job.current ? 'Present' : job.endDate}
+								{job.company} · {job.startDate} – {job.current
+									? messages.common.present
+									: job.endDate}
 							</p>
 						</div>
 					{/each}
@@ -190,14 +200,17 @@
 					href="/about"
 					class="mt-12 inline-block text-xs font-bold tracking-widest uppercase underline-offset-8 hover:underline"
 				>
-					Full career history
+					{messages.home.fullCareerHistory}
 				</a>
 			</div>
 
 			<div>
-				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">Recognition</p>
+				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">
+					{messages.common.recognition}
+				</p>
 				<h2 class="mb-10 font-display text-4xl font-bold md:text-5xl">
-					Moments I'm <span class="font-normal italic">proud of.</span>
+					{messages.home.proudMomentsStart}
+					<span class="font-normal italic">{messages.home.proudMomentsEmphasis}</span>
 				</h2>
 				<div class="space-y-6">
 					{#each [...CERTIFICATIONS, ...AWARDS] as item (item.id)}
@@ -223,11 +236,11 @@
 	<div class="container mx-auto px-6 text-center md:px-12">
 		<div class="mx-auto max-w-2xl">
 			<h2 class="mb-8 font-display text-4xl font-bold text-brand-ink md:text-6xl">
-				Let's build <span class="font-normal italic">together.</span>
+				{messages.home.buildTogetherStart}
+				<span class="font-normal italic">{messages.home.buildTogetherEmphasis}</span>
 			</h2>
 			<p class="mb-12 text-lg text-brand-muted">
-				Open to interesting projects, freelance work, or full-time roles in AI engineering, AWS
-				architecture, or full-stack TypeScript.
+				{messages.home.buildTogetherDescription}
 			</p>
 			<a
 				href={`mailto:${PROFILE.email}`}
