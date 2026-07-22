@@ -76,13 +76,6 @@
 		return page.url.pathname === i18n.localized(path);
 	}
 
-	function navLabel(path: string, fallback: string): string {
-		if (path === '/about') return messages.nav.about;
-		if (path === '/projects') return messages.nav.work;
-		if (path === '/blog') return messages.nav.writing;
-		return fallback;
-	}
-
 	function socialIcon(label: string) {
 		const l = label.toLowerCase();
 		if (l === 'email') return Mail;
@@ -147,7 +140,7 @@
 								? 'text-brand-accent'
 								: 'text-brand-muted'}"
 					>
-						{navLabel(item.path, item.label)}
+						{item.label}
 					</a>
 				{/each}
 				<LanguageToggle />
@@ -212,7 +205,7 @@
 					target={item.external ? '_blank' : undefined}
 					class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>
-					{navLabel(item.path, item.label)}
+					{item.label}
 				</a>
 			{/each}
 			<div class="mt-2">
@@ -281,7 +274,7 @@
 									target={item.external ? '_blank' : undefined}
 									class="text-sm text-brand-muted transition-colors hover:text-brand-accent"
 								>
-									{navLabel(item.path, item.label)}
+									{item.label}
 								</a>
 							</li>
 						{/each}
