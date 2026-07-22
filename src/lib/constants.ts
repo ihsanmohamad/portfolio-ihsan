@@ -15,16 +15,22 @@ import { LOCALE_OPTIONS, type Locale } from './i18n';
 type ProfileFile = Omit<Profile, 'languages'> & { languages: Profile['languages'] };
 type NavFile = { items: NavItem[] };
 
-const NAV_ITEM_TO_PAGE: Record<string, 'about' | 'projects' | 'blog' | 'contact'> = {
+const DEFAULT_NAV_SLUGS: Record<string, string> = {
 	about: 'about',
 	projects: 'projects',
 	blog: 'blog',
 	contact: 'contact'
 };
 
-function withNavSlug(raw: NavItem): NavItem {
+function navSlugFromItem(raw: NavItem): string {
 	const sanitized = (raw.slug ?? '').trim();
-	return { ...raw, slug: sanitized || '' };
+	if (sanitized) return sanitized;
+	const fallback = DEFAULT_NAV_SLUGS[raw.path.replace(/^\//, '').split('/')[0] ?? ''];
+	return fallback ?? raw.path.replace(/^\//, '').split('/')[0] ?? '';
+}
+
+function withNavSlug(raw: NavItem): NavItem {
+	return { ...raw, slug: navSlugFromItem(raw) };
 }
 type FooterFile = { tagline: string; socials: FooterLink[] };
 type ProjectModule = { metadata: ProjectMeta };
@@ -299,9 +305,7 @@ export function getNavSlugMap(): Record<Locale, Record<string, string>> {
 	for (const { code } of LOCALE_OPTIONS) {
 		const map: Record<string, string> = {};
 		for (const item of getNavItems(code)) {
-			const canonical = NAV_ITEM_TO_PAGE[item.id];
-			if (!canonical || !item.slug) continue;
-			map[item.slug] = canonical;
+			map[item.slug] = item.path.replace(/^\//, '');
 		}
 		result[code] = map;
 	}
