@@ -72,8 +72,8 @@
 		void pathname;
 	});
 
-	function isActive(path: string): boolean {
-		return page.url.pathname === i18n.localized(path);
+	function isActive(slug: string): boolean {
+		return page.url.pathname === i18n.localized(`/${slug}`);
 	}
 
 	function socialIcon(label: string) {
@@ -136,7 +136,7 @@
 						target={item.external ? '_blank' : undefined}
 						class="text-xs font-bold tracking-widest uppercase transition-colors hover:text-brand-accent {item.external
 							? 'text-brand-muted'
-							: isActive(item.path)
+							: isActive(item.slug)
 								? 'text-brand-accent'
 								: 'text-brand-muted'}"
 					>
@@ -266,10 +266,10 @@
 								>{messages.nav.home}</a
 							>
 						</li>
-						{#each navItems as item (item.path)}
+						{#each navItems as item (item.id)}
 							<li>
 								<a
-									href={i18n.localized(item.path)}
+									href={i18n.localized(`/${item.slug}`)}
 									rel={item.external ? 'noopener noreferrer' : undefined}
 									target={item.external ? '_blank' : undefined}
 									class="text-sm text-brand-muted transition-colors hover:text-brand-accent"
