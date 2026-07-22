@@ -8,6 +8,10 @@ const config = {
 	preprocess: [vitePreprocess(), mdsvex({ extensions: ['.md'] })],
 	kit: {
 		adapter: adapter(),
+		paths: {
+			relative: false,
+			base: ''
+		},
 		prerender: {
 			entries: ['/', '/en', '/ms-MY']
 		}
