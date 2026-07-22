@@ -2,18 +2,18 @@ items:
   - id: about
     order: 1
     label: Tentang
-    slug: tentang-2
+    slug: tentang
     external: false
     path: /about
   - id: projects
     order: 2
     label: Hasil Kerja
-    slug: hasil-kerja-2
+    slug: hasil-kerja
     external: false
     path: /projects
   - id: blog
     order: 3
     label: Penulisan
-    slug: penulisan-2
+    slug: penulisan
     external: false
     path: /blog
