@@ -44,20 +44,52 @@ singletons:
     file: /src/content/site/{{locale}}/profile.yaml
     i18n: true
     fields:
-      - { name: name, label: Name, widget: string, required: true, i18n: duplicate }
-      - { name: tagline, label: Tagline, widget: string, required: true, hint: 'Short headline, e.g. "Software Developer".', i18n: true }
-      - { name: location, label: Location, widget: string, required: true, i18n: true }
-      - { name: email, label: Email, widget: string, required: true, i18n: duplicate }
-      - { name: phone, label: Phone, widget: string, required: false, i18n: duplicate }
-      - { name: website, label: Website, widget: string, required: false, i18n: duplicate }
-      - { name: summary, label: Summary, widget: text, required: true, i18n: true }
+      - name: name
+        label: Name
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: tagline
+        label: Tagline
+        widget: string
+        required: true
+        i18n: true
+        hint: 'Short headline, e.g. "Software Developer".'
+      - name: location
+        label: Location
+        widget: string
+        required: true
+        i18n: true
+      - name: email
+        label: Email
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: phone
+        label: Phone
+        widget: string
+        required: false
+        i18n: duplicate
+      - name: website
+        label: Website
+        widget: string
+        required: false
+        i18n: duplicate
+      - name: summary
+        label: Summary
+        widget: text
+        required: true
+        i18n: true
       - name: languages
         label: Languages
         widget: list
         i18n: duplicate
-        field: { name: language, label: Language, widget: string, i18n: duplicate }
-
-- name: site_nav
+        field:
+          name: language
+          label: Language
+          widget: string
+          i18n: duplicate
+  - name: site_nav
     label: Site Navigation
     icon: menu
     file: /src/content/site/{{locale}}/nav.yaml
@@ -71,19 +103,47 @@ singletons:
         hint: Drag to reorder. The 'slug' becomes the URL segment for this locale (e.g. 'tentang' in Malay for /about).
         summary: '{{fields.label}} — /{{fields.locale}}/{{fields.slug}}'
         fields:
-          - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-          - { name: label, label: Label, widget: string, required: true, i18n: true }
-          - { name: slug, label: URL Slug, widget: string, required: true, hint: 'Locale-specific URL segment, e.g. "about" in English, "tentang" in Malay.', pattern: ['^[a-z0-9][a-z0-9\-]*$', 'Use lowercase letters, digits, and dashes only.'], i18n: true }
-          - { name: external, label: External, widget: boolean, default: false, i18n: duplicate }
-
+          - name: id
+            widget: hidden
+            default: '{{uuid}}'
+            i18n: duplicate
+          - name: order
+            label: Display Order
+            widget: number
+            value_type: int
+            min: 1
+            default: 1
+            i18n: duplicate
+          - name: label
+            label: Label
+            widget: string
+            required: true
+            i18n: true
+          - name: slug
+            label: URL Slug
+            widget: string
+            required: true
+            i18n: true
+            hint: 'Locale-specific URL segment, e.g. "about" in English, "tentang" in Malay.'
+            pattern:
+              - '^[a-z0-9][a-z0-9\-]*$'
+              - 'Use lowercase letters, digits, and dashes only.'
+          - name: external
+            label: External
+            widget: boolean
+            default: false
+            i18n: duplicate
   - name: site_footer
     label: Site Footer
     icon: anchor
     file: /src/content/site/{{locale}}/footer.yaml
     i18n: true
     fields:
-      - { name: tagline, label: Tagline, widget: text, required: true, i18n: true }
+      - name: tagline
+        label: Tagline
+        widget: text
+        required: true
+        i18n: true
       - name: socials
         label: Social Links
         label_singular: Social Link
@@ -91,10 +151,30 @@ singletons:
         i18n: duplicate
         summary: '{{fields.label}} — {{fields.url}}'
         fields:
-          - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-          - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-          - { name: label, label: Label, widget: string, required: true, i18n: duplicate }
-          - { name: url, label: URL, widget: string, required: true, pattern: ['^(https?:|mailto:|/)[^\\s]+$', 'Provide a full URL (https://...), a mailto:, or a site path (/contact).'], i18n: duplicate }
+          - name: id
+            widget: hidden
+            default: '{{uuid}}'
+            i18n: duplicate
+          - name: order
+            label: Display Order
+            widget: number
+            value_type: int
+            min: 1
+            default: 1
+            i18n: duplicate
+          - name: label
+            label: Label
+            widget: string
+            required: true
+            i18n: duplicate
+          - name: url
+            label: URL
+            widget: string
+            required: true
+            i18n: duplicate
+            pattern:
+              - '^(https?:|mailto:|/)[^\\s]+$'
+              - 'Provide a full URL (https://...), a mailto:, or a site path (/contact).'
 
 collections:
   - name: experience
@@ -107,22 +187,68 @@ collections:
     slug: '{{fields._slug}}'
     summary: '{{role}} — {{company}} ({{startDate}} – {{endDate}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-      - { name: company, label: Company, widget: string, required: true, i18n: duplicate }
-      - { name: role, label: Role, widget: string, required: true, i18n: true }
-      - { name: location, label: Location, widget: string, required: true, i18n: true }
-      - { name: startDate, label: Start Date, widget: string, required: true, hint: 'YYYY-MM, e.g. 2025-08', i18n: duplicate }
-      - { name: endDate, label: End Date, widget: string, required: false, hint: 'YYYY-MM or leave empty if current', i18n: duplicate }
-      - { name: current, label: Current Role, widget: boolean, default: false, i18n: duplicate }
-      - { name: description, label: Description, widget: text, required: true, i18n: true }
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: order
+        label: Display Order
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        i18n: duplicate
+      - name: company
+        label: Company
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: role
+        label: Role
+        widget: string
+        required: true
+        i18n: true
+      - name: location
+        label: Location
+        widget: string
+        required: true
+        i18n: true
+      - name: startDate
+        label: Start Date
+        widget: string
+        required: true
+        i18n: duplicate
+        hint: 'YYYY-MM, e.g. 2025-08'
+      - name: endDate
+        label: End Date
+        widget: string
+        required: false
+        i18n: duplicate
+        hint: 'YYYY-MM or leave empty if current'
+      - name: current
+        label: Current Role
+        widget: boolean
+        default: false
+        i18n: duplicate
+      - name: description
+        label: Description
+        widget: text
+        required: true
+        i18n: true
       - name: bullets
         label: Highlights
         widget: list
         i18n: true
-        field: { name: bullet, label: Bullet, widget: text, i18n: true }
-      - { name: link, label: Company Link, widget: string, required: false, i18n: duplicate }
-
+        field:
+          name: bullet
+          label: Bullet
+          widget: text
+          i18n: true
+      - name: link
+        label: Company Link
+        widget: string
+        required: false
+        i18n: duplicate
   - name: projects
     label: Projects
     label_singular: Project
@@ -136,23 +262,74 @@ collections:
     summary: '{{title}} — {{category}} ({{year}})'
     thumbnail: imageUrl
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-      - { name: title, label: Title, widget: string, required: true, i18n: true }
-      - { name: category, label: Category, widget: string, required: true, i18n: true }
-      - { name: year, label: Year, widget: string, required: true, pattern: ['^20[0-9]{2}$', 'Use a four-digit year, e.g. 2024.'], i18n: duplicate }
-      - { name: shortDescription, label: Short Description, widget: text, required: true, i18n: true }
-      - { name: imageUrl, label: Image, widget: image, required: false, i18n: duplicate }
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: order
+        label: Display Order
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        i18n: duplicate
+      - name: title
+        label: Title
+        widget: string
+        required: true
+        i18n: true
+      - name: category
+        label: Category
+        widget: string
+        required: true
+        i18n: true
+      - name: year
+        label: Year
+        widget: string
+        required: true
+        i18n: duplicate
+        pattern:
+          - '^20[0-9]{2}$'
+          - 'Use a four-digit year, e.g. 2024.'
+      - name: shortDescription
+        label: Short Description
+        widget: text
+        required: true
+        i18n: true
+      - name: imageUrl
+        label: Image
+        widget: image
+        required: false
+        i18n: duplicate
       - name: tech
         label: Tech Stack
         widget: list
         i18n: duplicate
-        field: { name: item, label: Item, widget: string, i18n: duplicate }
-      - { name: liveUrl, label: Live URL, widget: string, required: false, i18n: duplicate }
-      - { name: repoUrl, label: Repo URL, widget: string, required: false, i18n: duplicate }
-      - { name: featured, label: Featured, widget: boolean, default: false, i18n: duplicate }
-      - { name: body, label: Case Study, widget: richtext, required: true, i18n: true }
-
+        field:
+          name: item
+          label: Item
+          widget: string
+          i18n: duplicate
+      - name: liveUrl
+        label: Live URL
+        widget: string
+        required: false
+        i18n: duplicate
+      - name: repoUrl
+        label: Repo URL
+        widget: string
+        required: false
+        i18n: duplicate
+      - name: featured
+        label: Featured
+        widget: boolean
+        default: false
+        i18n: duplicate
+      - name: body
+        label: Case Study
+        widget: richtext
+        required: true
+        i18n: true
   - name: certifications
     label: Certifications
     label_singular: Certification
@@ -163,14 +340,43 @@ collections:
     slug: '{{fields._slug}}'
     summary: '{{title}} — {{issuer}} ({{issueDate}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-      - { name: title, label: Title, widget: string, required: true, i18n: true }
-      - { name: issuer, label: Issuer, widget: string, required: true, i18n: duplicate }
-      - { name: issueDate, label: Issue Date, widget: string, required: true, hint: 'Month YYYY, e.g. December 2024', i18n: duplicate }
-      - { name: credentialUrl, label: Credential URL, widget: string, required: false, i18n: duplicate }
-      - { name: description, label: Description, widget: text, required: true, i18n: true }
-
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: order
+        label: Display Order
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        i18n: duplicate
+      - name: title
+        label: Title
+        widget: string
+        required: true
+        i18n: true
+      - name: issuer
+        label: Issuer
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: issueDate
+        label: Issue Date
+        widget: string
+        required: true
+        i18n: duplicate
+        hint: 'Month YYYY, e.g. December 2024'
+      - name: credentialUrl
+        label: Credential URL
+        widget: string
+        required: false
+        i18n: duplicate
+      - name: description
+        label: Description
+        widget: text
+        required: true
+        i18n: true
   - name: awards
     label: Awards
     label_singular: Award
@@ -181,14 +387,43 @@ collections:
     slug: '{{fields._slug}}'
     summary: '{{title}} — {{issuer}} ({{date}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-      - { name: title, label: Title, widget: string, required: true, i18n: true }
-      - { name: issuer, label: Issuer, widget: string, required: true, i18n: duplicate }
-      - { name: date, label: Date, widget: string, required: true, i18n: duplicate }
-      - { name: achievement, label: Achievement, widget: string, required: false, hint: 'e.g. First-Runner Up', i18n: true }
-      - { name: description, label: Description, widget: text, required: true, i18n: true }
-
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: order
+        label: Display Order
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        i18n: duplicate
+      - name: title
+        label: Title
+        widget: string
+        required: true
+        i18n: true
+      - name: issuer
+        label: Issuer
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: date
+        label: Date
+        widget: string
+        required: true
+        i18n: duplicate
+      - name: achievement
+        label: Achievement
+        widget: string
+        required: false
+        i18n: duplicate
+        hint: 'e.g. First-Runner Up'
+      - name: description
+        label: Description
+        widget: text
+        required: true
+        i18n: true
   - name: skills
     label: Skills
     label_singular: Skill Group
@@ -199,15 +434,32 @@ collections:
     slug: '{{fields._slug}}'
     summary: '{{category}} ({{items.length}})'
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
-      - { name: category, label: Category, widget: string, required: true, hint: 'e.g. Languages, Frameworks, Cloud', i18n: true }
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: order
+        label: Display Order
+        widget: number
+        value_type: int
+        min: 1
+        default: 1
+        i18n: duplicate
+      - name: category
+        label: Category
+        widget: string
+        required: true
+        i18n: true
+        hint: 'e.g. Languages, Frameworks, Cloud'
       - name: items
         label: Skills
         widget: list
         i18n: duplicate
-        field: { name: skill, label: Skill, widget: string, i18n: duplicate }
-
+        field:
+          name: skill
+          label: Skill
+          widget: string
+          i18n: duplicate
   - name: posts
     label: Blog Posts
     label_singular: Blog Post
@@ -221,13 +473,57 @@ collections:
     summary: '{{title}} — {{publishedAt}}'
     thumbnail: imageUrl
     fields:
-      - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
-      - { name: title, label: Title, widget: string, required: true, i18n: true }
-      - { name: publishedAt, label: Published Date, widget: datetime, type: date, required: true, default: '{{now}}', i18n: duplicate }
-      - { name: category, label: Category, widget: string, required: true, i18n: true }
-      - { name: author, label: Author, widget: string, default: 'Ihsan Mohamad', i18n: duplicate }
-      - { name: readingMinutes, label: Reading Time, widget: number, value_type: int, min: 1, max: 60, default: 5, i18n: duplicate }
-      - { name: excerpt, label: Excerpt, widget: text, required: true, i18n: true }
-      - { name: imageUrl, label: Cover Image, widget: image, required: false, i18n: duplicate }
-      - { name: featured, label: Featured, widget: boolean, default: false, i18n: duplicate }
-      - { name: body, label: Article, widget: richtext, required: true, i18n: true }
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: title
+        label: Title
+        widget: string
+        required: true
+        i18n: true
+      - name: publishedAt
+        label: Published Date
+        widget: datetime
+        type: date
+        required: true
+        default: '{{now}}'
+        i18n: duplicate
+      - name: category
+        label: Category
+        widget: string
+        required: true
+        i18n: true
+      - name: author
+        label: Author
+        widget: string
+        default: 'Ihsan Mohamad'
+        i18n: duplicate
+      - name: readingMinutes
+        label: Reading Time
+        widget: number
+        value_type: int
+        min: 1
+        max: 60
+        default: 5
+        i18n: duplicate
+      - name: excerpt
+        label: Excerpt
+        widget: text
+        required: true
+        i18n: true
+      - name: imageUrl
+        label: Cover Image
+        widget: image
+        required: false
+        i18n: duplicate
+      - name: featured
+        label: Featured
+        widget: boolean
+        default: false
+        i18n: duplicate
+      - name: body
+        label: Article
+        widget: richtext
+        required: true
+        i18n: true
