@@ -69,12 +69,12 @@ singletons:
         widget: list
         i18n: true
         hint: Drag to reorder. Click the three-dot menu to edit the slug.
-        summary: '{{fields.label}} — {{fields.path}}'
+        summary: '{{fields.label}} — /{{fields.locale}}/{{fields.slug}}'
         fields:
           - { name: id, widget: hidden, default: '{{uuid}}', i18n: duplicate }
           - { name: order, label: Display Order, widget: number, value_type: int, min: 1, default: 1, i18n: duplicate }
           - { name: label, label: Label, widget: string, required: true, i18n: true }
-          - { name: path, label: Path, widget: string, required: true, pattern: ['^/[A-Za-z0-9/_\-]+$', 'Use a path starting with /, like /about.'], i18n: duplicate }
+          - { name: slug, label: URL Slug, widget: string, required: true, hint: 'Locale-specific URL segment, e.g. "about" in English, "tentang" in Malay.', pattern: ['^[a-z0-9][a-z0-9\-]*$', 'Use lowercase letters, digits, and dashes only.'], i18n: true }
           - { name: external, label: External, widget: boolean, default: false, i18n: duplicate }
 
   - name: site_footer

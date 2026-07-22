@@ -79,6 +79,7 @@ export interface NavItem {
 	id: string;
 	order: number;
 	label: string;
+	slug: string;
 	path: string;
 	external: boolean;
 }
