@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { getNavSlugMap } from '$lib/constants';
+	import { getNavCanonicalSlugMap, getNavSlugMap } from '$lib/constants';
 	import {
 		getI18nContext,
 		LOCALE_OPTIONS,
@@ -12,12 +12,15 @@
 
 	const i18n = getI18nContext();
 	const messages = $derived(i18n.messages);
-	const navSlugMap = getNavSlugMap();
+	const slugMaps = {
+		byLocale: getNavSlugMap(),
+		byCanonical: getNavCanonicalSlugMap()
+	};
 
 	function switchTo(code: Locale) {
 		if (code === page.params.lang) return;
 		persistLocale(code);
-		goto(swapLocaleInPath(page.url.pathname, code, navSlugMap));
+		goto(swapLocaleInPath(page.url.pathname, code, slugMaps));
 	}
 </script>
 

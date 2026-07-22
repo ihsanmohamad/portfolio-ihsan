@@ -131,7 +131,10 @@ export function localizedPath(locale: Locale, path: string): string {
 export function swapLocaleInPath(
 	pathname: string,
 	nextLocale: Locale,
-	slugMap?: Record<Locale, Record<string, string>>
+	slugMaps?: {
+		byLocale: Record<Locale, Record<string, string>>;
+		byCanonical: Record<Locale, Record<string, string>>;
+	}
 ): string {
 	const segments = pathname.split('/').filter(Boolean);
 	if (segments.length === 0) return `/${nextLocale}`;
@@ -144,11 +147,11 @@ export function swapLocaleInPath(
 	const currentLocale = segments[0] as Locale;
 	segments[0] = nextLocale;
 
-	if (slugMap && segments.length > 1) {
+	if (slugMaps && segments.length > 1) {
 		const currentSlug = segments[1];
-		const currentCanonical = slugMap[currentLocale]?.[currentSlug];
+		const currentCanonical = slugMaps.byLocale[currentLocale]?.[currentSlug];
 		if (currentCanonical) {
-			const nextSlug = slugMap[nextLocale]?.[currentCanonical];
+			const nextSlug = slugMaps.byCanonical[nextLocale]?.[currentCanonical];
 			if (nextSlug) segments[1] = nextSlug;
 		}
 	}

@@ -331,6 +331,20 @@ export function getNavSlugMap(): Record<Locale, Record<string, CanonicalPage>> {
 	return result;
 }
 
+export function getNavCanonicalSlugMap(): Record<Locale, Record<string, string>> {
+	const result = {} as Record<Locale, Record<string, string>>;
+	for (const { code } of LOCALE_OPTIONS) {
+		const map: Record<string, string> = {};
+		for (const item of getNavItems(code)) {
+			const canonical = NAV_ITEM_TO_PAGE[item.id];
+			if (!canonical || !item.slug) continue;
+			map[canonical] = item.slug;
+		}
+		result[code] = map;
+	}
+	return result;
+}
+
 export const PROFILE = getProfile('en');
 export const NAV_ITEMS = getNavItems('en');
 export const SITE_FOOTER = getSiteFooter('en');

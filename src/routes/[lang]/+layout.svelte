@@ -27,7 +27,11 @@
 	function navigateToLocale(nextLocale: Locale) {
 		if (nextLocale === locale) return;
 		persistLocale(nextLocale);
-		goto(swapLocaleInPath(page.url.pathname, nextLocale, navSlugMap));
+		const slugMaps = {
+			byLocale: getNavSlugMap(),
+			byCanonical: getNavCanonicalSlugMap()
+		};
+		goto(swapLocaleInPath(page.url.pathname, nextLocale, slugMaps));
 	}
 
 	const i18n: I18nContext = {
