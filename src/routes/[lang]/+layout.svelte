@@ -129,9 +129,9 @@
 			</a>
 
 			<div class="hidden items-center space-x-10 md:flex">
-				{#each navItems as item (item.id)}
+				{#each navItems as item (item.path)}
 					<a
-						href={i18n.localized(`/${item.slug}`)}
+						href={i18n.localized(item.path)}
 						rel={item.external ? 'noopener noreferrer' : undefined}
 						target={item.external ? '_blank' : undefined}
 						class="text-xs font-bold tracking-widest uppercase transition-colors hover:text-brand-accent {item.external
@@ -198,9 +198,9 @@
 				class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>{messages.nav.home}</a
 			>
-			{#each navItems as item (item.id)}
+			{#each navItems as item (item.path)}
 				<a
-					href={i18n.localized(`/${item.slug}`)}
+					href={i18n.localized(item.path)}
 					rel={item.external ? 'noopener noreferrer' : undefined}
 					target={item.external ? '_blank' : undefined}
 					class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"

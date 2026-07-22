@@ -14,24 +14,6 @@ import { LOCALE_OPTIONS, type Locale } from './i18n';
 
 type ProfileFile = Omit<Profile, 'languages'> & { languages: Profile['languages'] };
 type NavFile = { items: NavItem[] };
-
-const DEFAULT_NAV_SLUGS: Record<string, string> = {
-	about: 'about',
-	projects: 'projects',
-	blog: 'blog',
-	contact: 'contact'
-};
-
-function navSlugFromItem(raw: NavItem): string {
-	const sanitized = (raw.slug ?? '').trim();
-	if (sanitized) return sanitized;
-	const fallback = DEFAULT_NAV_SLUGS[raw.path.replace(/^\//, '').split('/')[0] ?? ''];
-	return fallback ?? raw.path.replace(/^\//, '').split('/')[0] ?? '';
-}
-
-function withNavSlug(raw: NavItem): NavItem {
-	return { ...raw, slug: navSlugFromItem(raw) };
-}
 type FooterFile = { tagline: string; socials: FooterLink[] };
 type ProjectModule = { metadata: ProjectMeta };
 
@@ -116,11 +98,11 @@ function buildPostsByLocale(
 	const byKey: Record<string, { base?: BlogPostMeta; ms?: BlogPostMeta }> = {};
 	for (const [path, mod] of Object.entries(base)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], base: { ...mod.metadata, slug: key } };
+		byKey[key] = { ...byKey[key], base: mod.metadata };
 	}
 	for (const [path, mod] of Object.entries(ms)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], ms: { ...mod.metadata, slug: key } };
+		byKey[key] = { ...byKey[key], ms: mod.metadata };
 	}
 	const merged: Record<Locale, BlogPostMeta[]> = {
 		en: [],
@@ -238,10 +220,7 @@ export function getProfile(locale: Locale): Profile {
 export function getNavItems(locale: Locale): NavItem[] {
 	const file = pickSingleton(navModules, locale, 'nav.yaml') ??
 		pickSingleton(navModules, 'en', 'nav.yaml') ?? { items: [] };
-	return file.items
-		.map(withNavSlug)
-		.slice()
-		.sort((a, b) => a.order - b.order);
+	return file.items.slice().sort((a, b) => a.order - b.order);
 }
 
 export function getSiteFooter(locale: Locale): SiteFooter {
@@ -298,18 +277,6 @@ export function getProjectSlugs(): Array<{ lang: Locale; slug: string }> {
 
 export function getPosts(locale: Locale): BlogPostMeta[] {
 	return POSTS_BY_LOCALE[locale] ?? [];
-}
-
-export function getNavSlugMap(): Record<Locale, Record<string, string>> {
-	const result = {} as Record<Locale, Record<string, string>>;
-	for (const { code } of LOCALE_OPTIONS) {
-		const map: Record<string, string> = {};
-		for (const item of getNavItems(code)) {
-			map[item.slug] = item.path.replace(/^\//, '');
-		}
-		result[code] = map;
-	}
-	return result;
 }
 
 export const PROFILE = getProfile('en');
