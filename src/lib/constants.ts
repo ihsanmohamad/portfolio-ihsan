@@ -1,6 +1,7 @@
 import type {
 	Award,
 	BlogPostMeta,
+	CanonicalPage,
 	Certification,
 	Experience,
 	FooterLink,
@@ -16,6 +17,31 @@ type ProfileFile = Omit<Profile, 'languages'> & { languages: Profile['languages'
 type NavFile = { items: NavItem[] };
 type FooterFile = { tagline: string; socials: FooterLink[] };
 type ProjectModule = { metadata: ProjectMeta };
+
+const NAV_ITEM_TO_PAGE: Record<string, CanonicalPage> = {
+	about: 'about',
+	projects: 'projects',
+	blog: 'blog',
+	contact: 'contact'
+};
+
+const DEFAULT_NAV_SLUGS: Record<CanonicalPage, string> = {
+	about: 'about',
+	projects: 'projects',
+	blog: 'blog',
+	contact: 'contact'
+};
+
+export function defaultSlugFor(page: CanonicalPage): string {
+	return DEFAULT_NAV_SLUGS[page];
+}
+
+function withNavSlug(raw: NavItem): NavItem {
+	const canonical = NAV_ITEM_TO_PAGE[raw.id];
+	const fallback = canonical ? DEFAULT_NAV_SLUGS[canonical] : '';
+	const sanitized = (raw.slug ?? '').trim();
+	return { ...raw, slug: sanitized || fallback };
+}
 
 function fileKey(path: string): string {
 	return path.replace(/^.*\//, '').replace(/\.[^.]+$/, '');
@@ -98,11 +124,11 @@ function buildPostsByLocale(
 	const byKey: Record<string, { base?: BlogPostMeta; ms?: BlogPostMeta }> = {};
 	for (const [path, mod] of Object.entries(base)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], base: mod.metadata };
+		byKey[key] = { ...byKey[key], base: { ...mod.metadata, slug: key } };
 	}
 	for (const [path, mod] of Object.entries(ms)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], ms: mod.metadata };
+		byKey[key] = { ...byKey[key], ms: { ...mod.metadata, slug: key } };
 	}
 	const merged: Record<Locale, BlogPostMeta[]> = {
 		en: [],
@@ -220,7 +246,19 @@ export function getProfile(locale: Locale): Profile {
 export function getNavItems(locale: Locale): NavItem[] {
 	const file = pickSingleton(navModules, locale, 'nav.yaml') ??
 		pickSingleton(navModules, 'en', 'nav.yaml') ?? { items: [] };
-	return file.items.slice().sort((a, b) => a.order - b.order);
+	return file.items
+		.map(withNavSlug)
+		.slice()
+		.sort((a, b) => a.order - b.order);
+}
+
+export function getNavSlugs(locale: Locale): Record<CanonicalPage, string> {
+	const result = {} as Record<CanonicalPage, string>;
+	for (const item of getNavItems(locale)) {
+		const canonical = NAV_ITEM_TO_PAGE[item.id];
+		if (canonical && item.slug) result[canonical] = item.slug;
+	}
+	return result;
 }
 
 export function getSiteFooter(locale: Locale): SiteFooter {
@@ -277,6 +315,20 @@ export function getProjectSlugs(): Array<{ lang: Locale; slug: string }> {
 
 export function getPosts(locale: Locale): BlogPostMeta[] {
 	return POSTS_BY_LOCALE[locale] ?? [];
+}
+
+export function getNavSlugMap(): Record<Locale, Record<string, CanonicalPage>> {
+	const result = {} as Record<Locale, Record<string, CanonicalPage>>;
+	for (const { code } of LOCALE_OPTIONS) {
+		const map: Record<string, CanonicalPage> = {};
+		for (const item of getNavItems(code)) {
+			const canonical = NAV_ITEM_TO_PAGE[item.id];
+			if (!canonical || !item.slug) continue;
+			map[item.slug] = canonical;
+		}
+		result[code] = map;
+	}
+	return result;
 }
 
 export const PROFILE = getProfile('en');

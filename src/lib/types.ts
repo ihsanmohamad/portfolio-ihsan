@@ -79,9 +79,11 @@ export interface NavItem {
 	id: string;
 	order: number;
 	label: string;
-	path: string;
+	slug: string;
 	external: boolean;
 }
+
+export type CanonicalPage = 'about' | 'projects' | 'blog' | 'contact';
 
 export interface FooterLink {
 	id: string;

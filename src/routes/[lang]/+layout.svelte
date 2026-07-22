@@ -3,7 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { getNavItems, getProfile, getSiteFooter } from '$lib/constants';
+	import { getNavItems, getNavSlugMap, getProfile, getSiteFooter } from '$lib/constants';
 	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
 	import {
 		MESSAGES,
@@ -22,11 +22,12 @@
 	const profile = $derived(getProfile(locale));
 	const navItems = $derived(getNavItems(locale));
 	const siteFooter = $derived(getSiteFooter(locale));
+	const navSlugMap = getNavSlugMap();
 
 	function navigateToLocale(nextLocale: Locale) {
 		if (nextLocale === locale) return;
 		persistLocale(nextLocale);
-		goto(swapLocaleInPath(page.url.pathname, nextLocale));
+		goto(swapLocaleInPath(page.url.pathname, nextLocale, navSlugMap));
 	}
 
 	const i18n: I18nContext = {
@@ -72,8 +73,8 @@
 		void pathname;
 	});
 
-	function isActive(path: string): boolean {
-		return page.url.pathname === i18n.localized(path);
+	function isActive(slug: string): boolean {
+		return page.url.pathname === i18n.localized(`/${slug}`);
 	}
 
 	function socialIcon(label: string) {
@@ -129,14 +130,14 @@
 			</a>
 
 			<div class="hidden items-center space-x-10 md:flex">
-				{#each navItems as item (item.path)}
+				{#each navItems as item (item.id)}
 					<a
-						href={i18n.localized(item.path)}
+						href={i18n.localized(`/${item.slug}`)}
 						rel={item.external ? 'noopener noreferrer' : undefined}
 						target={item.external ? '_blank' : undefined}
 						class="text-xs font-bold tracking-widest uppercase transition-colors hover:text-brand-accent {item.external
 							? 'text-brand-muted'
-							: isActive(item.path)
+							: isActive(item.id)
 								? 'text-brand-accent'
 								: 'text-brand-muted'}"
 					>
@@ -198,9 +199,9 @@
 				class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>{messages.nav.home}</a
 			>
-			{#each navItems as item (item.path)}
+			{#each navItems as item (item.id)}
 				<a
-					href={i18n.localized(item.path)}
+					href={i18n.localized(`/${item.slug}`)}
 					rel={item.external ? 'noopener noreferrer' : undefined}
 					target={item.external ? '_blank' : undefined}
 					class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
@@ -266,10 +267,10 @@
 								>{messages.nav.home}</a
 							>
 						</li>
-						{#each navItems as item (item.path)}
+						{#each navItems as item (item.id)}
 							<li>
 								<a
-									href={i18n.localized(item.path)}
+									href={i18n.localized(`/${item.slug}`)}
 									rel={item.external ? 'noopener noreferrer' : undefined}
 									target={item.external ? '_blank' : undefined}
 									class="text-sm text-brand-muted transition-colors hover:text-brand-accent"

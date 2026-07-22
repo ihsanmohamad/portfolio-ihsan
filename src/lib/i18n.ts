@@ -128,14 +128,32 @@ export function localizedPath(locale: Locale, path: string): string {
 	return `/${locale}${normalized === '/' ? '' : normalized}`;
 }
 
-export function swapLocaleInPath(pathname: string, nextLocale: Locale): string {
+export function swapLocaleInPath(
+	pathname: string,
+	nextLocale: Locale,
+	slugMap?: Record<Locale, Record<string, string>>
+): string {
 	const segments = pathname.split('/').filter(Boolean);
-	if (segments.length > 0 && isLocale(segments[0])) {
-		segments[0] = nextLocale;
-	} else {
+	if (segments.length === 0) return `/${nextLocale}`;
+
+	if (!isLocale(segments[0])) {
 		segments.unshift(nextLocale);
+		return `/${segments.join('/')}`;
 	}
-	return segments.length === 0 ? `/${nextLocale}` : `/${segments.join('/')}`;
+
+	const currentLocale = segments[0] as Locale;
+	segments[0] = nextLocale;
+
+	if (slugMap && segments.length > 1) {
+		const currentSlug = segments[1];
+		const currentCanonical = slugMap[currentLocale]?.[currentSlug];
+		if (currentCanonical) {
+			const nextSlug = slugMap[nextLocale]?.[currentCanonical];
+			if (nextSlug) segments[1] = nextSlug;
+		}
+	}
+
+	return `/${segments.join('/')}`;
 }
 
 export function persistLocale(locale: Locale) {

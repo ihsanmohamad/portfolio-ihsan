@@ -6,7 +6,8 @@
 		getCertifications,
 		getAwards,
 		getSkills,
-		getFeaturedProjects
+		getFeaturedProjects,
+		getNavItems
 	} from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
@@ -18,6 +19,11 @@
 	const experience = $derived(getExperience(locale));
 	const certifications = $derived(getCertifications(locale));
 	const awards = $derived(getAwards(locale));
+	const navItems = $derived(getNavItems(locale));
+
+	function slugFor(itemId: string): string {
+		return navItems.find((n) => n.id === itemId)?.slug ?? '';
+	}
 	const skills = $derived(getSkills(locale));
 	const currentRole = $derived(experience.find((e) => e.current));
 </script>
@@ -101,7 +107,7 @@
 					</h2>
 				</div>
 				<a
-					href={i18n.localized('/projects')}
+					href={i18n.localized(`/${slugFor('projects')}`)}
 					class="text-xs font-bold tracking-widest text-brand-accent uppercase underline-offset-8 hover:underline"
 				>
 					{messages.home.viewAllWorks}
@@ -204,7 +210,7 @@
 				</div>
 
 				<a
-					href={i18n.localized('/about')}
+					href={i18n.localized(`/${slugFor('about')}`)}
 					class="mt-12 inline-block text-xs font-bold tracking-widest uppercase underline-offset-8 hover:underline"
 				>
 					{messages.home.fullCareerHistory}

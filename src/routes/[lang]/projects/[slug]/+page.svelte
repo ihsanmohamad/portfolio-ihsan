@@ -2,6 +2,7 @@
 	import type { Component } from 'svelte';
 	import { ArrowRight, ArrowLeft, ExternalLink, Github, Calendar } from '@lucide/svelte';
 	import { getI18nContext } from '$lib/i18n';
+	import { getNavItems } from '$lib/constants';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -9,12 +10,14 @@
 	const i18n = getI18nContext();
 	const messages = $derived(i18n.messages);
 	const Markdown = $derived(data.component as Component | undefined);
+	const navItems = $derived(getNavItems(i18n.locale));
+	const projectsSlug = $derived(navItems.find((n) => n.id === 'projects')?.slug ?? 'projects');
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-12">
 	<div class="container mx-auto px-6 md:px-12">
 		<a
-			href={i18n.localized('/projects')}
+			href={i18n.localized(`/${projectsSlug}`)}
 			class="mb-8 inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-muted uppercase hover:text-brand-accent"
 		>
 			<ArrowLeft size={14} />
