@@ -3,7 +3,13 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { getNavItems, getNavSlugMap, getProfile, getSiteFooter } from '$lib/constants';
+	import {
+		getNavCanonicalSlugMap,
+		getNavItems,
+		getNavSlugMap,
+		getProfile,
+		getSiteFooter
+	} from '$lib/constants';
 	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
 	import {
 		MESSAGES,
