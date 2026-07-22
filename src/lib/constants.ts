@@ -1,79 +1,294 @@
 import type {
+	Award,
+	BlogPostMeta,
 	Certification,
+	Experience,
 	FooterLink,
 	NavItem,
 	Profile,
 	ProjectMeta,
 	SiteFooter,
-	Skill,
-	Award,
-	Experience
+	Skill
 } from './types';
+import { LOCALE_OPTIONS, type Locale } from './i18n';
 
-import profile from '../content/site/profile.yaml';
-import navItems from '../content/site/nav.yaml';
-import footerConfig from '../content/site/footer.yaml';
+type ProfileFile = Omit<Profile, 'languages'> & { languages: Profile['languages'] };
+type NavFile = { items: NavItem[] };
+type FooterFile = { tagline: string; socials: FooterLink[] };
+type ProjectModule = { metadata: ProjectMeta };
 
-function loadCollection<T extends { order: number }>(modules: Record<string, T>): T[] {
-	return Object.values(modules).sort((a, b) => a.order - b.order);
+function fileKey(path: string): string {
+	return path.replace(/^.*\//, '').replace(/\.[^.]+$/, '');
 }
 
-const experienceModules = import.meta.glob<Experience>('../content/experience/*.json', {
+function buildCollectionByLocale<T extends { id: string; order: number }>(
+	base: Record<string, T>,
+	ms: Record<string, T>
+): Record<Locale, T[]> {
+	const byKey: Record<string, { base?: T; ms?: T }> = {};
+	for (const [path, entry] of Object.entries(base)) {
+		const key = fileKey(path);
+		byKey[key] = { ...byKey[key], base: entry };
+	}
+	for (const [path, entry] of Object.entries(ms)) {
+		const key = fileKey(path);
+		byKey[key] = { ...byKey[key], ms: entry };
+	}
+
+	const orderedKeys = Object.keys(byKey).sort((a, b) => {
+		const oa = byKey[a].base?.order ?? byKey[a].ms?.order ?? 0;
+		const ob = byKey[b].base?.order ?? byKey[b].ms?.order ?? 0;
+		return oa - ob;
+	});
+
+	return {
+		en: orderedKeys.map((k) => byKey[k].base ?? byKey[k].ms).filter((v): v is T => !!v),
+		'ms-MY': orderedKeys.map((k) => byKey[k].ms ?? byKey[k].base).filter((v): v is T => !!v)
+	};
+}
+
+function buildProjectMap(
+	base: Record<string, ProjectModule>,
+	ms: Record<string, ProjectModule>
+): Record<Locale, Record<string, ProjectMeta>> {
+	const map: Record<Locale, Record<string, ProjectMeta>> = { en: {}, 'ms-MY': {} };
+	for (const [path, mod] of Object.entries(base)) {
+		const slug = fileKey(path);
+		map.en[slug] = { ...mod.metadata, slug };
+	}
+	for (const [path, mod] of Object.entries(ms)) {
+		const slug = fileKey(path);
+		map['ms-MY'][slug] = { ...mod.metadata, slug };
+	}
+	for (const slug of Object.keys(map.en)) {
+		if (!map['ms-MY'][slug]) map['ms-MY'][slug] = map.en[slug];
+	}
+	for (const slug of Object.keys(map['ms-MY'])) {
+		if (!map.en[slug]) map.en[slug] = map['ms-MY'][slug];
+	}
+	return map;
+}
+
+function buildProjectModules(
+	base: Record<string, ProjectModule>,
+	ms: Record<string, ProjectModule>
+): Record<Locale, Record<string, ProjectModule>> {
+	const map: Record<Locale, Record<string, ProjectModule>> = { en: {}, 'ms-MY': {} };
+	for (const [path, mod] of Object.entries(base)) {
+		const slug = fileKey(path);
+		map.en[slug] = mod;
+	}
+	for (const [path, mod] of Object.entries(ms)) {
+		const slug = fileKey(path);
+		map['ms-MY'][slug] = mod;
+	}
+	for (const slug of Object.keys(map.en)) {
+		if (!map['ms-MY'][slug]) map['ms-MY'][slug] = map.en[slug];
+	}
+	for (const slug of Object.keys(map['ms-MY'])) {
+		if (!map.en[slug]) map.en[slug] = map['ms-MY'][slug];
+	}
+	return map;
+}
+
+function buildPostsByLocale(
+	base: Record<string, { metadata: BlogPostMeta }>,
+	ms: Record<string, { metadata: BlogPostMeta }>
+): Record<Locale, BlogPostMeta[]> {
+	const byKey: Record<string, { base?: BlogPostMeta; ms?: BlogPostMeta }> = {};
+	for (const [path, mod] of Object.entries(base)) {
+		const key = fileKey(path);
+		byKey[key] = { ...byKey[key], base: mod.metadata };
+	}
+	for (const [path, mod] of Object.entries(ms)) {
+		const key = fileKey(path);
+		byKey[key] = { ...byKey[key], ms: mod.metadata };
+	}
+	const merged: Record<Locale, BlogPostMeta[]> = {
+		en: [],
+		'ms-MY': []
+	};
+	for (const { base: b, ms: m } of Object.values(byKey)) {
+		if (b) merged.en.push(b);
+		if (m) merged['ms-MY'].push(m);
+		else if (b) merged['ms-MY'].push(b);
+	}
+	merged.en.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+	merged['ms-MY'].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+	return merged;
+}
+
+const profileModules = import.meta.glob<ProfileFile>(
+	['../content/site/profile.yaml', '../content/site/ms-MY/profile.yaml'],
+	{ eager: true, import: 'default' }
+);
+const navModules = import.meta.glob<NavFile>(
+	['../content/site/nav.yaml', '../content/site/ms-MY/nav.yaml'],
+	{ eager: true, import: 'default' }
+);
+const footerModules = import.meta.glob<FooterFile>(
+	['../content/site/footer.yaml', '../content/site/ms-MY/footer.yaml'],
+	{ eager: true, import: 'default' }
+);
+
+const experienceBase = import.meta.glob<Experience>('../content/experience/*.json', {
+	eager: true,
+	import: 'default'
+});
+const experienceMs = import.meta.glob<Experience>('../content/experience/ms-MY/*.json', {
 	eager: true,
 	import: 'default'
 });
 
-const projectModules = import.meta.glob<{ metadata: ProjectMeta }>('../content/projects/*.md', {
+const projectBase = import.meta.glob<ProjectModule>('../content/projects/*.md', {
+	eager: true
+});
+const projectMs = import.meta.glob<ProjectModule>('../content/projects/ms-MY/*.md', {
 	eager: true
 });
 
-const certificationModules = import.meta.glob<Certification>('../content/certifications/*.json', {
+const certificationBase = import.meta.glob<Certification>('../content/certifications/*.json', {
+	eager: true,
+	import: 'default'
+});
+const certificationMs = import.meta.glob<Certification>('../content/certifications/ms-MY/*.json', {
 	eager: true,
 	import: 'default'
 });
 
-const awardModules = import.meta.glob<Award>('../content/awards/*.json', {
+const awardBase = import.meta.glob<Award>('../content/awards/*.json', {
+	eager: true,
+	import: 'default'
+});
+const awardMs = import.meta.glob<Award>('../content/awards/ms-MY/*.json', {
 	eager: true,
 	import: 'default'
 });
 
-const skillModules = import.meta.glob<Skill>('../content/skills/*.json', {
+const skillBase = import.meta.glob<Skill>('../content/skills/*.json', {
+	eager: true,
+	import: 'default'
+});
+const skillMs = import.meta.glob<Skill>('../content/skills/ms-MY/*.json', {
 	eager: true,
 	import: 'default'
 });
 
-export const EXPERIENCE = loadCollection(experienceModules);
-export const CERTIFICATIONS = loadCollection(certificationModules);
-export const AWARDS = loadCollection(awardModules);
-export const SKILLS = loadCollection(skillModules);
+const postBase = import.meta.glob<{ metadata: BlogPostMeta }>('../content/posts/*.md', {
+	eager: true
+});
+const postMs = import.meta.glob<{ metadata: BlogPostMeta }>('../content/posts/ms-MY/*.md', {
+	eager: true
+});
 
-function getSlug(path: string): string {
-	return path.replace(/^.*\//, '').replace(/\.md$/, '');
+const EXPERIENCE_BY_LOCALE = buildCollectionByLocale(experienceBase, experienceMs);
+const CERTIFICATIONS_BY_LOCALE = buildCollectionByLocale(certificationBase, certificationMs);
+const AWARDS_BY_LOCALE = buildCollectionByLocale(awardBase, awardMs);
+const SKILLS_BY_LOCALE = buildCollectionByLocale(skillBase, skillMs);
+const PROJECTS_BY_LOCALE = buildProjectMap(projectBase, projectMs);
+const PROJECTS_MODULES_BY_LOCALE = buildProjectModules(projectBase, projectMs);
+const POSTS_BY_LOCALE = buildPostsByLocale(postBase, postMs);
+
+function pickSingleton<T>(
+	modules: Record<string, T>,
+	locale: Locale,
+	basePath: string
+): T | undefined {
+	if (locale === 'ms-MY') {
+		const localized = modules[`../content/site/ms-MY/${basePath}`];
+		if (localized) return localized;
+	}
+	return modules[`../content/site/${basePath}`];
 }
 
-export const PROJECTS: ProjectMeta[] = Object.entries(projectModules).map(([path, mod]) => ({
-	...(mod.metadata as unknown as ProjectMeta),
-	slug: getSlug(path)
-}));
+export function getProfile(locale: Locale): Profile {
+	return (
+		pickSingleton(profileModules, locale, 'profile.yaml') ??
+		pickSingleton(profileModules, 'en', 'profile.yaml') ?? {
+			name: '',
+			tagline: '',
+			location: '',
+			email: '',
+			phone: '',
+			website: '',
+			summary: '',
+			languages: []
+		}
+	);
+}
 
-export const FEATURED_PROJECTS: ProjectMeta[] = PROJECTS.filter((p) => p.featured).sort(
+export function getNavItems(locale: Locale): NavItem[] {
+	const file = pickSingleton(navModules, locale, 'nav.yaml') ??
+		pickSingleton(navModules, 'en', 'nav.yaml') ?? { items: [] };
+	return file.items.slice().sort((a, b) => a.order - b.order);
+}
+
+export function getSiteFooter(locale: Locale): SiteFooter {
+	const file = pickSingleton(footerModules, locale, 'footer.yaml') ??
+		pickSingleton(footerModules, 'en', 'footer.yaml') ?? { tagline: '', socials: [] };
+	return {
+		tagline: file.tagline,
+		socials: file.socials.slice().sort((a, b) => a.order - b.order)
+	};
+}
+
+export function getExperience(locale: Locale): Experience[] {
+	return EXPERIENCE_BY_LOCALE[locale] ?? [];
+}
+
+export function getCertifications(locale: Locale): Certification[] {
+	return CERTIFICATIONS_BY_LOCALE[locale] ?? [];
+}
+
+export function getAwards(locale: Locale): Award[] {
+	return AWARDS_BY_LOCALE[locale] ?? [];
+}
+
+export function getSkills(locale: Locale): Skill[] {
+	return SKILLS_BY_LOCALE[locale] ?? [];
+}
+
+export function getProjects(locale: Locale): ProjectMeta[] {
+	const map = PROJECTS_BY_LOCALE[locale] ?? {};
+	return Object.values(map).sort((a, b) => a.order - b.order);
+}
+
+export function getFeaturedProjects(locale: Locale): ProjectMeta[] {
+	return getProjects(locale).filter((p) => p.featured);
+}
+
+export function getProjectBySlug(
+	locale: Locale,
+	slug: string
+): { metadata: ProjectMeta; default?: unknown } | undefined {
+	return PROJECTS_MODULES_BY_LOCALE[locale]?.[slug];
+}
+
+export function getProjectSlugs(): Array<{ lang: Locale; slug: string }> {
+	const result: Array<{ lang: Locale; slug: string }> = [];
+	for (const { code } of LOCALE_OPTIONS) {
+		const map = PROJECTS_BY_LOCALE[code] ?? {};
+		for (const slug of Object.keys(map)) {
+			result.push({ lang: code, slug });
+		}
+	}
+	return result;
+}
+
+export function getPosts(locale: Locale): BlogPostMeta[] {
+	return POSTS_BY_LOCALE[locale] ?? [];
+}
+
+export const PROFILE = getProfile('en');
+export const NAV_ITEMS = getNavItems('en');
+export const SITE_FOOTER = getSiteFooter('en');
+export const EXPERIENCE = EXPERIENCE_BY_LOCALE.en;
+export const CERTIFICATIONS = CERTIFICATIONS_BY_LOCALE.en;
+export const AWARDS = AWARDS_BY_LOCALE.en;
+export const SKILLS = SKILLS_BY_LOCALE.en;
+export const PROJECTS = Object.values(PROJECTS_BY_LOCALE.en ?? {}).sort(
 	(a, b) => a.order - b.order
 );
-
-export const PROJECTS_SORTED: ProjectMeta[] = PROJECTS.slice().sort((a, b) => a.order - b.order);
-
-export const PROJECTS_BY_SLUG: Record<string, { metadata: ProjectMeta; default?: unknown }> =
-	Object.fromEntries(Object.entries(projectModules).map(([path, mod]) => [getSlug(path), mod]));
-
-export const NAV_ITEMS: NavItem[] = (navItems as unknown as { items: NavItem[] }).items
-	.slice()
-	.sort((a, b) => a.order - b.order);
-
-export const SITE_FOOTER: SiteFooter = {
-	tagline: (footerConfig as unknown as { tagline: string }).tagline,
-	socials: (footerConfig as unknown as { socials: FooterLink[] }).socials
-		.slice()
-		.sort((a, b) => a.order - b.order)
-};
-
-export const PROFILE: Profile = profile as unknown as Profile;
+export const PROJECTS_BY_SLUG = PROJECTS_MODULES_BY_LOCALE.en ?? {};
+export const PROJECTS_SORTED = PROJECTS.slice();
+export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);

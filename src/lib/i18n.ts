@@ -112,6 +112,7 @@ export interface Messages {
 export interface I18nContext {
 	readonly locale: Locale;
 	readonly messages: Messages;
+	localized: (path: string) => string;
 	setLocale: (locale: Locale) => void;
 }
 
@@ -119,6 +120,29 @@ export const LOCALE_OPTIONS: ReadonlyArray<{ code: Locale; label: string }> = [
 	{ code: 'en', label: 'EN' },
 	{ code: 'ms-MY', label: 'BM' }
 ];
+
+export const LOCALE_COOKIE = 'portfolio-locale';
+
+export function localizedPath(locale: Locale, path: string): string {
+	const normalized = path.startsWith('/') ? path : `/${path}`;
+	return `/${locale}${normalized === '/' ? '' : normalized}`;
+}
+
+export function swapLocaleInPath(pathname: string, nextLocale: Locale): string {
+	const segments = pathname.split('/').filter(Boolean);
+	if (segments.length > 0 && isLocale(segments[0])) {
+		segments[0] = nextLocale;
+	} else {
+		segments.unshift(nextLocale);
+	}
+	return segments.length === 0 ? `/${nextLocale}` : `/${segments.join('/')}`;
+}
+
+export function persistLocale(locale: Locale) {
+	if (typeof document === 'undefined') return;
+	const oneYear = 60 * 60 * 24 * 365;
+	document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${oneYear}; SameSite=Lax`;
+}
 
 export const MESSAGES: Record<Locale, Messages> = {
 	en: {

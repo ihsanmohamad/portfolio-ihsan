@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { Mail, MapPin, Phone, Github, Linkedin } from '@lucide/svelte';
-	import { PROFILE, SITE_FOOTER } from '$lib/constants';
+	import { getProfile, getSiteFooter } from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
+	import { Mail, MapPin, Phone, Github, Linkedin } from '@lucide/svelte';
 
 	const i18n = getI18nContext();
+	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
+	const profile = $derived(getProfile(locale));
+	const siteFooter = $derived(getSiteFooter(locale));
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
@@ -30,7 +33,7 @@
 			<div class="lg:col-span-7">
 				<div class="space-y-8">
 					<a
-						href={`mailto:${PROFILE.email}`}
+						href={`mailto:${profile.email}`}
 						class="group flex items-start gap-6 rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 					>
 						<div
@@ -45,14 +48,14 @@
 							<p
 								class="font-display text-xl font-bold text-brand-ink group-hover:text-brand-accent"
 							>
-								{PROFILE.email}
+								{profile.email}
 							</p>
 						</div>
 					</a>
 
-					{#if PROFILE.phone}
+					{#if profile.phone}
 						<a
-							href={`tel:${PROFILE.phone.replace(/\s/g, '')}`}
+							href={`tel:${profile.phone.replace(/\s/g, '')}`}
 							class="group flex items-start gap-6 rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 						>
 							<div
@@ -67,7 +70,7 @@
 								<p
 									class="font-display text-xl font-bold text-brand-ink group-hover:text-brand-accent"
 								>
-									{PROFILE.phone}
+									{profile.phone}
 								</p>
 							</div>
 						</a>
@@ -83,7 +86,7 @@
 							<p class="mb-1 text-xs font-bold tracking-widest text-brand-muted uppercase">
 								{messages.contact.basedIn}
 							</p>
-							<p class="font-display text-xl font-bold text-brand-ink">{PROFILE.location}</p>
+							<p class="font-display text-xl font-bold text-brand-ink">{profile.location}</p>
 						</div>
 					</div>
 				</div>
@@ -95,7 +98,7 @@
 						{messages.contact.aroundTheWeb}
 					</p>
 					<div class="space-y-3">
-						{#each SITE_FOOTER.socials as link (link.url)}
+						{#each siteFooter.socials as link (link.url)}
 							<a
 								href={link.url}
 								rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}

@@ -14,7 +14,7 @@
 <section class="border-b border-brand-border pt-32 pb-12">
 	<div class="container mx-auto px-6 md:px-12">
 		<a
-			href="/projects"
+			href={i18n.localized('/projects')}
 			class="mb-8 inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-muted uppercase hover:text-brand-accent"
 		>
 			<ArrowLeft size={14} />
@@ -103,7 +103,7 @@
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 				{#if data.previous}
 					<a
-						href={`/projects/${data.previous.slug}`}
+						href={i18n.localized(`/projects/${data.previous.slug}`)}
 						class="group block rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 					>
 						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">
@@ -121,7 +121,7 @@
 				{/if}
 				{#if data.next}
 					<a
-						href={`/projects/${data.next.slug}`}
+						href={i18n.localized(`/projects/${data.next.slug}`)}
 						class="group block rounded-2xl border border-brand-border bg-white p-6 text-right transition-colors hover:border-brand-accent"
 					>
 						<p class="mb-2 text-xs font-bold tracking-widest text-brand-muted uppercase">

@@ -1,34 +1,41 @@
 <script lang="ts">
 	import { ArrowRight, Mail, Github, Linkedin } from '@lucide/svelte';
 	import {
-		PROFILE,
-		FEATURED_PROJECTS,
-		EXPERIENCE,
-		CERTIFICATIONS,
-		AWARDS,
-		SKILLS
+		getProfile,
+		getExperience,
+		getCertifications,
+		getAwards,
+		getSkills,
+		getFeaturedProjects
 	} from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
 	const i18n = getI18nContext();
 	const messages = $derived(i18n.messages);
-	const currentRole = EXPERIENCE.find((e) => e.current);
+	const locale = $derived(i18n.locale);
+	const profile = $derived(getProfile(locale));
+	const featuredProjects = $derived(getFeaturedProjects(locale));
+	const experience = $derived(getExperience(locale));
+	const certifications = $derived(getCertifications(locale));
+	const awards = $derived(getAwards(locale));
+	const skills = $derived(getSkills(locale));
+	const currentRole = $derived(experience.find((e) => e.current));
 </script>
 
 <section class="flex min-h-[88vh] items-center pt-20">
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="max-w-5xl">
 			<p class="mb-8 text-xs font-bold tracking-[0.3em] text-brand-accent uppercase">
-				{PROFILE.location} · {PROFILE.tagline}
+				{profile.location} · {profile.tagline}
 			</p>
 			<h1
 				class="mb-10 font-display text-6xl leading-[0.95] font-bold tracking-tight md:text-[120px]"
 			>
-				{PROFILE.name.split(' ')[0]}<br />
+				{profile.name.split(' ')[0]}<br />
 				<span class="font-normal italic">Mohamad.</span>
 			</h1>
 			<p class="mb-12 max-w-2xl text-xl leading-relaxed text-brand-muted md:text-2xl">
-				{PROFILE.summary}
+				{profile.summary}
 			</p>
 
 			{#if currentRole}
@@ -48,7 +55,7 @@
 
 			<div class="flex flex-wrap items-center gap-4">
 				<a
-					href={`mailto:${PROFILE.email}`}
+					href={`mailto:${profile.email}`}
 					class="group flex items-center gap-4 rounded-full bg-brand-ink px-8 py-4 text-sm font-bold tracking-widest text-brand-bg uppercase transition-all duration-300 hover:bg-brand-accent hover:text-black"
 				>
 					{messages.nav.getInTouch}
@@ -81,7 +88,7 @@
 	</div>
 </section>
 
-{#if FEATURED_PROJECTS.length > 0}
+{#if featuredProjects.length > 0}
 	<section class="border-t border-brand-border bg-white py-32">
 		<div class="container mx-auto px-6 md:px-12">
 			<div class="mb-16 flex items-end justify-between">
@@ -94,7 +101,7 @@
 					</h2>
 				</div>
 				<a
-					href="/projects"
+					href={i18n.localized('/projects')}
 					class="text-xs font-bold tracking-widest text-brand-accent uppercase underline-offset-8 hover:underline"
 				>
 					{messages.home.viewAllWorks}
@@ -102,8 +109,8 @@
 			</div>
 
 			<div class="grid grid-cols-1 gap-12 md:grid-cols-2">
-				{#each FEATURED_PROJECTS as project (project.slug)}
-					<a href={`/projects/${project.slug}`} class="group block">
+				{#each featuredProjects as project (project.slug)}
+					<a href={i18n.localized(`/projects/${project.slug}`)} class="group block">
 						<div
 							class="relative mb-8 flex aspect-[16/10] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-brand-ink to-brand-muted"
 						>
@@ -155,7 +162,7 @@
 		</div>
 
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-			{#each SKILLS as group (group.id)}
+			{#each skills as group (group.id)}
 				<div class="rounded-2xl border border-brand-border bg-white p-8">
 					<h3 class="mb-6 text-xs font-bold tracking-widest text-brand-accent uppercase">
 						{group.category}
@@ -184,7 +191,7 @@
 				</h2>
 
 				<div class="space-y-8">
-					{#each EXPERIENCE.slice(0, 3) as job (job.id)}
+					{#each experience.slice(0, 3) as job (job.id)}
 						<div>
 							<p class="mb-1 font-display text-xl font-bold">{job.role}</p>
 							<p class="text-sm text-brand-bg/70">
@@ -197,7 +204,7 @@
 				</div>
 
 				<a
-					href="/about"
+					href={i18n.localized('/about')}
 					class="mt-12 inline-block text-xs font-bold tracking-widest uppercase underline-offset-8 hover:underline"
 				>
 					{messages.home.fullCareerHistory}
@@ -213,7 +220,7 @@
 					<span class="font-normal italic">{messages.home.proudMomentsEmphasis}</span>
 				</h2>
 				<div class="space-y-6">
-					{#each [...CERTIFICATIONS, ...AWARDS] as item (item.id)}
+					{#each [...certifications, ...awards] as item (item.id)}
 						<div class="border-l-2 border-brand-accent pl-4">
 							<p class="font-bold">{item.title}</p>
 							<p class="text-sm text-brand-bg/70">
@@ -243,11 +250,11 @@
 				{messages.home.buildTogetherDescription}
 			</p>
 			<a
-				href={`mailto:${PROFILE.email}`}
+				href={`mailto:${profile.email}`}
 				class="inline-flex items-center gap-3 rounded-full bg-brand-ink px-10 py-5 text-sm font-bold tracking-widest text-brand-bg uppercase transition-all duration-300 hover:bg-brand-accent hover:text-black"
 			>
 				<Mail size={18} />
-				{PROFILE.email}
+				{profile.email}
 			</a>
 		</div>
 	</div>

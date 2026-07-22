@@ -1,40 +1,12 @@
 <script lang="ts">
 	import { ArrowRight } from '@lucide/svelte';
+	import { getPosts } from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
 	const i18n = getI18nContext();
+	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
-
-	type PostMeta = {
-		id: string;
-		slug: string;
-		title: string;
-		publishedAt: string;
-		category: string;
-		author: string;
-		readingMinutes: number;
-		excerpt: string;
-		imageUrl: string;
-		featured: boolean;
-		order?: number;
-	};
-
-	const postModules = import.meta.glob<{ metadata: PostMeta }>('../content/posts/*.md', {
-		eager: true
-	});
-	const readingModules = import.meta.glob<string>('../content/posts/*.md', {
-		eager: true,
-		query: '?raw',
-		import: 'default'
-	});
-
-	const posts = Object.entries(postModules)
-		.map(([path, mod]) => ({
-			...(mod.metadata as unknown as PostMeta),
-			slug: path.replace(/\.md$/, '').split('/').pop() ?? '',
-			component: readingModules[path]
-		}))
-		.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+	const posts = $derived(getPosts(locale));
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
@@ -72,7 +44,7 @@
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 				{#each posts as post (post.slug)}
 					<a
-						href={`/blog/${post.slug}`}
+						href={i18n.localized(`/blog/${post.slug}`)}
 						class="group flex flex-col rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 					>
 						<p class="mb-3 text-xs font-bold tracking-widest text-brand-accent uppercase">

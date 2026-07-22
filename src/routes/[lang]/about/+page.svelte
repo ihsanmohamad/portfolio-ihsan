@@ -1,10 +1,22 @@
 <script lang="ts">
 	import { Award, GraduationCap, Briefcase, Download } from '@lucide/svelte';
-	import { PROFILE, EXPERIENCE, CERTIFICATIONS, AWARDS, SKILLS } from '$lib/constants';
+	import {
+		getProfile,
+		getExperience,
+		getCertifications,
+		getAwards,
+		getSkills
+	} from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
 	const i18n = getI18nContext();
+	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
+	const profile = $derived(getProfile(locale));
+	const experience = $derived(getExperience(locale));
+	const certifications = $derived(getCertifications(locale));
+	const awards = $derived(getAwards(locale));
+	const skills = $derived(getSkills(locale));
 
 	function formatRange(start: string, end: string | null, current: boolean): string {
 		return `${start} – ${current ? messages.common.present : (end ?? messages.common.now)}`;
@@ -31,15 +43,15 @@
 		<div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-12">
 			<div class="lg:col-span-7">
 				<p class="mb-12 font-display text-2xl leading-snug text-brand-ink md:text-3xl">
-					{PROFILE.summary}
-					{messages.about.profileDetail(PROFILE.location)}
+					{profile.summary}
+					{messages.about.profileDetail(profile.location)}
 				</p>
 				<p class="mb-12 text-lg leading-relaxed text-brand-muted">
 					{messages.about.recentWork}
 				</p>
 
 				<div class="flex flex-wrap gap-3">
-					{#each PROFILE.languages as lang (lang)}
+					{#each profile.languages as lang (lang)}
 						<span
 							class="inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-bg px-4 py-2 text-xs font-bold tracking-widest text-brand-ink uppercase"
 						>
@@ -53,7 +65,7 @@
 					class="flex aspect-[4/5] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-brand-ink via-brand-muted to-brand-accent shadow-2xl"
 				>
 					<span class="font-display text-9xl font-bold text-white/30">
-						{PROFILE.name.charAt(0)}
+						{profile.name.charAt(0)}
 					</span>
 				</div>
 			</div>
@@ -75,7 +87,7 @@
 		</div>
 
 		<ol class="space-y-12">
-			{#each EXPERIENCE as job (job.id)}
+			{#each experience as job (job.id)}
 				<li
 					class="grid grid-cols-1 gap-6 border-l-2 border-brand-border pb-12 pl-8 transition-colors hover:border-brand-accent md:grid-cols-4"
 				>
@@ -166,7 +178,7 @@
 					<span class="font-normal italic">{messages.about.skillsHeadingEmphasis}</span>
 				</h2>
 				<div class="space-y-4">
-					{#each SKILLS as group (group.id)}
+					{#each skills as group (group.id)}
 						<div class="rounded-2xl border border-brand-border bg-brand-bg p-5">
 							<h3 class="mb-3 text-xs font-bold tracking-widest text-brand-accent uppercase">
 								{group.category}
@@ -199,7 +211,7 @@
 					{messages.about.credentials}
 				</h2>
 				<div class="space-y-6">
-					{#each CERTIFICATIONS as cert (cert.id)}
+					{#each certifications as cert (cert.id)}
 						<div class="rounded-2xl border border-brand-border bg-white p-6">
 							<div class="flex flex-wrap items-start justify-between gap-2">
 								<div>
@@ -233,7 +245,7 @@
 					{messages.about.highlights}
 				</h2>
 				<div class="space-y-6">
-					{#each AWARDS as award (award.id)}
+					{#each awards as award (award.id)}
 						<div class="rounded-2xl border border-brand-border bg-white p-6">
 							<h3 class="font-display text-xl font-bold text-brand-ink">{award.title}</h3>
 							<p class="text-sm text-brand-muted">
@@ -261,7 +273,7 @@
 				{messages.about.fullPictureDescription}
 			</p>
 			<a
-				href={`mailto:${PROFILE.email}`}
+				href={`mailto:${profile.email}`}
 				class="inline-flex items-center gap-3 rounded-full bg-brand-accent px-10 py-5 text-sm font-bold tracking-widest text-black uppercase transition-all duration-300 hover:bg-brand-bg hover:text-brand-ink"
 			>
 				<Download size={18} />

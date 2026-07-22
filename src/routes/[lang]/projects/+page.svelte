@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { ArrowRight, ExternalLink, Github } from '@lucide/svelte';
-	import { PROJECTS_SORTED } from '$lib/constants';
+	import { getProjects } from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
 	const i18n = getI18nContext();
+	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
+	const projects = $derived(getProjects(locale));
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
@@ -28,7 +30,7 @@
 <section class="py-24">
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="space-y-20">
-			{#each PROJECTS_SORTED as project, i (project.slug)}
+			{#each projects as project, i (project.slug)}
 				<article
 					class="grid grid-cols-1 gap-10 border-b border-brand-border pb-20 last:border-b-0 lg:grid-cols-12"
 				>
@@ -64,7 +66,7 @@
 
 						<div class="flex flex-wrap items-center gap-4">
 							<a
-								href={`/projects/${project.slug}`}
+								href={i18n.localized(`/projects/${project.slug}`)}
 								class="group inline-flex items-center gap-2 text-xs font-bold tracking-widest text-brand-ink uppercase hover:text-brand-accent"
 							>
 								{messages.projects.readCaseStudy}

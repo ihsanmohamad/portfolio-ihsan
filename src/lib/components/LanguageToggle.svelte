@@ -1,8 +1,22 @@
 <script lang="ts">
-	import { getI18nContext, LOCALE_OPTIONS } from '$lib/i18n';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import {
+		getI18nContext,
+		LOCALE_OPTIONS,
+		persistLocale,
+		swapLocaleInPath,
+		type Locale
+	} from '$lib/i18n';
 
 	const i18n = getI18nContext();
 	const messages = $derived(i18n.messages);
+
+	function switchTo(code: Locale) {
+		if (code === page.params.lang) return;
+		persistLocale(code);
+		goto(swapLocaleInPath(page.url.pathname, code));
+	}
 </script>
 
 <div
@@ -14,11 +28,11 @@
 		<button
 			type="button"
 			aria-label={messages.language.switchTo[option.code]}
-			aria-pressed={i18n.locale === option.code}
-			onclick={() => i18n.setLocale(option.code)}
+			aria-pressed={page.params.lang === option.code}
+			onclick={() => switchTo(option.code)}
 			class={[
 				'rounded-full px-3 py-1.5 text-[10px] font-bold tracking-widest transition-colors',
-				i18n.locale === option.code
+				page.params.lang === option.code
 					? 'bg-brand-ink text-brand-bg'
 					: 'text-brand-muted hover:text-brand-accent'
 			]}
