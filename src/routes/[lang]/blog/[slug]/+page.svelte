@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { ArrowLeft } from '@lucide/svelte';
+	import { getCategories } from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	const i18n = getI18nContext();
+	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
+	const categories = $derived(getCategories(locale));
+	const categoryById = $derived(new Map(categories.map((c) => [c.id, c])));
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-12">
@@ -18,9 +22,13 @@
 			<ArrowLeft size={14} />
 			Back
 		</a>
-		<p class="mb-4 text-xs font-bold tracking-widest text-brand-accent uppercase">
-			{data.post.category}
-		</p>
+		<div class="mb-4 flex flex-wrap gap-2">
+			{#each (data.post.category ?? []).map((id) => categoryById.get(id)).filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
+				<span class="text-xs font-bold tracking-widest text-brand-accent uppercase">
+					{cat.title}
+				</span>
+			{/each}
+		</div>
 		<h1
 			class="font-display text-5xl leading-tight font-bold tracking-tight text-brand-ink md:text-7xl"
 		>

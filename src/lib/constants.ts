@@ -2,6 +2,7 @@ import type {
 	Award,
 	BlogPostMeta,
 	CanonicalPage,
+	Category,
 	Certification,
 	Experience,
 	FooterLink,
@@ -117,6 +118,18 @@ function buildProjectModules(
 	return map;
 }
 
+function normalizePost(meta: BlogPostMeta, slug: string): BlogPostMeta {
+	const rawCategory = (meta as unknown as { category?: unknown }).category;
+	let category: string[] | null = null;
+	if (Array.isArray(rawCategory)) {
+		category = rawCategory.filter((c): c is string => typeof c === 'string');
+		if (category.length === 0) category = null;
+	} else if (typeof rawCategory === 'string' && rawCategory.trim().length > 0) {
+		category = [rawCategory];
+	}
+	return { ...meta, slug, category };
+}
+
 function buildPostsByLocale(
 	base: Record<string, { metadata: BlogPostMeta }>,
 	ms: Record<string, { metadata: BlogPostMeta }>
@@ -124,11 +137,11 @@ function buildPostsByLocale(
 	const byKey: Record<string, { base?: BlogPostMeta; ms?: BlogPostMeta }> = {};
 	for (const [path, mod] of Object.entries(base)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], base: { ...mod.metadata, slug: key } };
+		byKey[key] = { ...byKey[key], base: normalizePost(mod.metadata, key) };
 	}
 	for (const [path, mod] of Object.entries(ms)) {
 		const key = fileKey(path);
-		byKey[key] = { ...byKey[key], ms: { ...mod.metadata, slug: key } };
+		byKey[key] = { ...byKey[key], ms: normalizePost(mod.metadata, key) };
 	}
 	const merged: Record<Locale, BlogPostMeta[]> = {
 		en: [],
@@ -154,6 +167,17 @@ const navModules = import.meta.glob<NavFile>(
 );
 const footerModules = import.meta.glob<FooterFile>(
 	['../content/site/footer.yaml', '../content/site/ms-MY/footer.yaml'],
+	{ eager: true, import: 'default' }
+);
+
+type CategoryFile = Omit<Category, 'id'>;
+
+const categoryBase = import.meta.glob<CategoryFile>(
+	'../content/categories/*.yaml',
+	{ eager: true, import: 'default' }
+);
+const categoryMs = import.meta.glob<CategoryFile>(
+	'../content/categories/ms-MY/*.yaml',
 	{ eager: true, import: 'default' }
 );
 
@@ -293,6 +317,38 @@ export function getProjects(locale: Locale): ProjectMeta[] {
 
 export function getFeaturedProjects(locale: Locale): ProjectMeta[] {
 	return getProjects(locale).filter((p) => p.featured);
+}
+
+function buildCategoryByLocale(): Record<Locale, Record<string, Category>> {
+	const byKey: Record<string, { base?: CategoryFile; ms?: CategoryFile }> = {};
+	for (const [path, file] of Object.entries(categoryBase)) {
+		const key = path.replace(/^.*\//, '').replace(/\.yaml$/, '');
+		byKey[key] = { ...byKey[key], base: file };
+	}
+	for (const [path, file] of Object.entries(categoryMs)) {
+		const key = path.replace(/^.*\//, '').replace(/\.yaml$/, '');
+		byKey[key] = { ...byKey[key], ms: file };
+	}
+	const out: Record<Locale, Record<string, Category>> = { en: {}, 'ms-MY': {} };
+	for (const [key, { base, ms }] of Object.entries(byKey)) {
+		if (base) out.en[key] = { ...base, id: key, slug: key };
+		if (ms) out['ms-MY'][key] = { ...ms, id: key, slug: key };
+		else if (base) out['ms-MY'][key] = { ...base, id: key, slug: key };
+	}
+	return out;
+}
+
+const CATEGORY_BY_LOCALE = buildCategoryByLocale();
+
+export function getCategories(locale: Locale): Category[] {
+	return Object.values(CATEGORY_BY_LOCALE[locale] ?? {}).sort((a, b) =>
+		a.title.localeCompare(b.title)
+	);
+}
+
+export function getCategoryById(locale: Locale, id: string): Category | undefined {
+	const map = CATEGORY_BY_LOCALE[locale] ?? {};
+	return map[id] ?? map[id.toLowerCase()];
 }
 
 export function getProjectBySlug(

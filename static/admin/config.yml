@@ -449,8 +449,8 @@ collections:
         label: Category
         widget: string
         required: true
-        i18n: true
         hint: 'e.g. Languages, Frameworks, Cloud'
+        i18n: true
       - name: items
         label: Skills
         widget: list
@@ -460,6 +460,38 @@ collections:
           label: Skill
           widget: string
           i18n: duplicate
+  - name: categories
+    label: Categories
+    label_singular: Category
+    folder: /src/content/categories
+    format: yaml
+    i18n: true
+    identifier_field: title
+    slug: '{{fields._slug}}'
+    summary: '{{title}}'
+    fields:
+      - name: id
+        widget: hidden
+        default: '{{uuid}}'
+        i18n: duplicate
+      - name: title
+        label: Title
+        widget: string
+        required: true
+        i18n: true
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        i18n: true
+        pattern:
+          - '^[a-z0-9][a-z0-9\-]*$'
+          - 'Use lowercase letters, digits, and dashes only.'
+      - name: description
+        label: Description
+        widget: text
+        required: false
+        i18n: true
   - name: posts
     label: Blog Posts
     label_singular: Blog Post
@@ -490,10 +522,15 @@ collections:
         default: '{{now}}'
         i18n: duplicate
       - name: category
-        label: Category
-        widget: string
-        required: true
+        label: Categories
+        widget: relation
+        collection: categories
+        multiple: true
+        value_field: '{{locale}}/{{slug}}'
+        display_fields: ['{{title}}']
+        search_fields: ['{{title}}', '{{slug}}']
         i18n: true
+        required: false
       - name: author
         label: Author
         widget: string

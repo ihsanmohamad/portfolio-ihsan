@@ -63,7 +63,7 @@ export interface BlogPostMeta {
 	slug: string;
 	title: string;
 	publishedAt: string;
-	category: string;
+	category: string[] | null;
 	author: string;
 	readingMinutes: number;
 	excerpt: string;
@@ -84,6 +84,13 @@ export interface NavItem {
 }
 
 export type CanonicalPage = 'about' | 'projects' | 'blog' | 'contact';
+
+export interface Category {
+	id: string;
+	slug: string;
+	title: string;
+	description?: string;
+}
 
 export interface FooterLink {
 	id: string;

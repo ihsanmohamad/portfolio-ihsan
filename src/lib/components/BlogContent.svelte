@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { ArrowRight } from '@lucide/svelte';
-	import { getPosts } from '$lib/constants';
+	import { getCategories, getPosts } from '$lib/constants';
 	import { getI18nContext } from '$lib/i18n';
 
 	const i18n = getI18nContext();
 	const locale = $derived(i18n.locale);
 	const messages = $derived(i18n.messages);
 	const posts = $derived(getPosts(locale));
+	const categories = $derived(getCategories(locale));
+	const categoryById = $derived(new Map(categories.map((c) => [c.id, c])));
 </script>
 
 <section class="border-b border-brand-border pt-32 pb-16">
@@ -43,28 +45,34 @@
 		{:else}
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 				{#each posts as post (post.slug)}
-					<a
-						href={i18n.localized(`/blog/${post.slug}`)}
-						class="group flex flex-col rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
+				<a
+					href={i18n.localized(`/blog/${post.slug}`)}
+					class="group flex flex-col rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
+				>
+					<div class="mb-3 flex flex-wrap gap-2">
+						{#each (post.category ?? []).map((id) => categoryById.get(id)).filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
+							<span
+								class="text-xs font-bold tracking-widest text-brand-accent uppercase"
+							>
+								{cat.title}
+							</span>
+						{/each}
+					</div>
+					<h2
+						class="mb-3 flex-1 font-display text-xl font-bold text-brand-ink transition-colors group-hover:text-brand-accent"
 					>
-						<p class="mb-3 text-xs font-bold tracking-widest text-brand-accent uppercase">
-							{post.category}
-						</p>
-						<h2
-							class="mb-3 flex-1 font-display text-xl font-bold text-brand-ink transition-colors group-hover:text-brand-accent"
-						>
-							{post.title}
-						</h2>
-						<p class="mb-4 text-sm text-brand-muted">{post.excerpt}</p>
-						<div class="flex items-center justify-between text-xs text-brand-muted">
-							<span>{post.publishedAt}</span>
-							<span>{post.readingMinutes} {messages.blog.minuteRead}</span>
-						</div>
-						<ArrowRight
-							size={16}
-							class="mt-4 self-end text-brand-ink transition-colors group-hover:text-brand-accent"
-						/>
-					</a>
+						{post.title}
+					</h2>
+					<p class="mb-4 text-sm text-brand-muted">{post.excerpt}</p>
+					<div class="flex items-center justify-between text-xs text-brand-muted">
+						<span>{post.publishedAt}</span>
+						<span>{post.readingMinutes} {messages.blog.minuteRead}</span>
+					</div>
+					<ArrowRight
+						size={16}
+						class="mt-4 self-end text-brand-ink transition-colors group-hover:text-brand-accent"
+					/>
+				</a>
 				{/each}
 			</div>
 		{/if}
