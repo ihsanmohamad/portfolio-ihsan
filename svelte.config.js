@@ -13,7 +13,8 @@ const config = {
 			base: ''
 		},
 		prerender: {
-			entries: ['/', '/en', '/ms-MY']
+			entries: ['/', '/en', '/ms-MY'],
+			origin: 'https://portfolio-ihsan-production.temps.popyt.io'
 		}
 	}
 };

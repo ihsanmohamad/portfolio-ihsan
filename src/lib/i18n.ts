@@ -1,5 +1,7 @@
 import { createContext } from 'svelte';
 
+export const SITE_ORIGIN = 'https://portfolio-ihsan-production.temps.popyt.io';
+
 export type Locale = 'en' | 'ms-MY';
 
 export interface Messages {

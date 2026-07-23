@@ -1,18 +1,11 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import HomeContent from '$lib/components/HomeContent.svelte';
+	import { SITE_ORIGIN } from '$lib/i18n';
 </script>
 
 <svelte:head>
-	<title>Ihsan Mohamad</title>
-	<meta http-equiv="refresh" content="0;url=/en/" />
+	<title>Ihsan Mohamad — Software Developer</title>
+	<link rel="canonical" href={SITE_ORIGIN + '/en/'} />
 </svelte:head>
 
-{#if browser}
-	<script>
-		window.location.replace('/en/');
-	</script>
-{/if}
-
-<noscript>
-	<p><a href="/en/">Continue to /en/</a></p>
-</noscript>
+<HomeContent locale="en" />
