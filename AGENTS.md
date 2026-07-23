@@ -90,6 +90,29 @@ etc., all from one route.
    every `(lang, talk-slug)` from the CMS.
 5. If talks are listed on an existing page, just import the getter and iterate.
 
+# Root URL: keep the meta-refresh, optionally add a host-level redirect
+
+`src/routes/+page.svelte` is a SvelteKit-prerendered meta-refresh HTML at
+`/` that bounces visitors to `/en/`. Keep it as a portability safety net.
+
+- It works on every static host (Netlify, Cloudflare Pages, GH Pages, etc.)
+  with no extra config.
+- It survives host-config mistakes.
+- JS-enabled users redirect via `window.location.replace` and don't see the
+  page; non-JS users see a small "One moment please" card.
+
+For the fastest possible experience, the host (Temps, Netlify, etc.)
+can also issue a server-level 301/302 from `/` to `/en/`:
+
+- Temps: add a `301 redirect` rule in the site config (or a `_redirects` file
+  at the static root).
+- Netlify: add a `_redirects` file.
+- Cloudflare Pages: add a `_redirects` file.
+- nginx: add a `return 301` to the server block.
+
+Both layers together is defense in depth. If the user moves to a host
+that doesn't have the redirect configured, the meta-refresh still works.
+
 # i18n — how locales work
 
 - **Locales**: `en`, `ms-MY`. Add a new locale by appending to `i18n.locales`
