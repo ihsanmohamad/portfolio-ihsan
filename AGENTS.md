@@ -90,28 +90,22 @@ etc., all from one route.
    every `(lang, talk-slug)` from the CMS.
 5. If talks are listed on an existing page, just import the getter and iterate.
 
-# Root URL: keep the meta-refresh, optionally add a host-level redirect
+# Root URL: serve the English home directly, no client-side redirect
 
-`src/routes/+page.svelte` is a SvelteKit-prerendered meta-refresh HTML at
-`/` that bounces visitors to `/en/`. Keep it as a portability safety net.
+`src/routes/+page.svelte` renders the English home page in place at
+`/`, so a visit to the bare root URL loads the actual content with no
+meta refresh, no `window.location.replace`, no JS redirect. This keeps
+real-user-experience analytics (Lighthouse, RUM, etc.) clean — there's
+no "client-side redirect" skewing the timing.
 
-- It works on every static host (Netlify, Cloudflare Pages, GH Pages, etc.)
-  with no extra config.
-- It survives host-config mistakes.
-- JS-enabled users redirect via `window.location.replace` and don't see the
-  page; non-JS users see a small "One moment please" card.
+The page sets `<link rel="canonical" href="https://.../en/">` so search
+engines know the canonical home lives at `/en/` even though the bare
+`/` URL also serves it. The static host should serve the file at
+`build/index.html` directly — no host-level redirect needed for SEO.
 
-For the fastest possible experience, the host (Temps, Netlify, etc.)
-can also issue a server-level 301/302 from `/` to `/en/`:
-
-- Temps: add a `301 redirect` rule in the site config (or a `_redirects` file
-  at the static root).
-- Netlify: add a `_redirects` file.
-- Cloudflare Pages: add a `_redirects` file.
-- nginx: add a `return 301` to the server block.
-
-Both layers together is defense in depth. If the user moves to a host
-that doesn't have the redirect configured, the meta-refresh still works.
+If the host serves a different page than the build output, set the
+correct `Content-Type: text/html` and disable any auto-rewrites that
+inject redirects.
 
 # i18n — how locales work
 
