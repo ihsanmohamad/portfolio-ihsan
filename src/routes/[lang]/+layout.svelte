@@ -3,7 +3,6 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { getNavItems, getProfile, getSiteFooter } from '$lib/constants';
-	import SiteChrome from '$lib/components/SiteChrome.svelte';
 	import {
 		MESSAGES,
 		persistLocale,
@@ -46,6 +45,4 @@
 	<meta name="description" content={profile.summary} />
 </svelte:head>
 
-<SiteChrome {profile} {navItems} {siteFooter}>
-	{@render children()}
-</SiteChrome>
+{@render children()}
