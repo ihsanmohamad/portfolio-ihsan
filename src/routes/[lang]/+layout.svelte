@@ -84,7 +84,10 @@
 	});
 
 	function isActive(slug: string): boolean {
-		return page.url.pathname === i18n.localized(`/${slug}`);
+		const localized = i18n.localized(`/${slug}`);
+		return (
+			page.url.pathname === localized || page.url.pathname.startsWith(`${localized}/`)
+		);
 	}
 
 	function socialIcon(label: string) {
@@ -147,7 +150,7 @@
 						target={item.external ? '_blank' : undefined}
 						class="text-xs font-bold tracking-widest uppercase transition-colors hover:text-brand-accent {item.external
 							? 'text-brand-muted'
-							: isActive(item.id)
+							: isActive(item.slug)
 								? 'text-brand-accent'
 								: 'text-brand-muted'}"
 					>
