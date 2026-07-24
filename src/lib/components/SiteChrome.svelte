@@ -53,6 +53,15 @@
 		void pathname;
 	});
 
+	$effect(() => {
+		if (typeof document === 'undefined') return;
+		const original = document.body.style.overflow;
+		document.body.style.overflow = isMobileMenuOpen ? 'hidden' : original;
+		return () => {
+			document.body.style.overflow = original;
+		};
+	});
+
 	function isActive(slug: string): boolean {
 		const path = localized(`/${slug}`);
 		return page.url.pathname === path || page.url.pathname.startsWith(`${path}/`);
@@ -170,10 +179,9 @@
 	</div>
 
 	<div
-		class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-brand-bg transition-all duration-500 {isMobileMenuOpen
+		class="fixed inset-0 z-40 flex flex-col items-center justify-center overflow-y-auto overscroll-contain bg-brand-bg transition-all duration-500 {isMobileMenuOpen
 			? 'pointer-events-auto opacity-100'
 			: 'pointer-events-none opacity-0'}"
-		class:overflow-hidden={isMobileMenuOpen}
 	>
 		<button
 			type="button"
@@ -208,7 +216,7 @@
 		</div>
 	</div>
 
-	<main class="grow pt-24" class:overflow-hidden={isMobileMenuOpen}>
+	<main class="grow pt-24">
 		{@render children?.()}
 	</main>
 
