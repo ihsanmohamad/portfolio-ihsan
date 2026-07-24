@@ -3,22 +3,28 @@
 	import { page } from '$app/state';
 	import { getNavCanonicalSlugMap, getNavSlugMap } from '$lib/constants';
 	import {
-		getI18nContext,
 		LOCALE_OPTIONS,
+		MESSAGES,
+		isLocale,
 		persistLocale,
 		swapLocaleInPath,
 		type Locale
 	} from '$lib/i18n';
 
-	const i18n = getI18nContext();
-	const messages = $derived(i18n.messages);
+	const resolvedLocale: Locale = $derived.by(() => {
+		const fromParam: string | undefined = page.params.lang;
+		if (isLocale(fromParam)) return fromParam;
+		const first: string | undefined = page.url.pathname.split('/').filter(Boolean)[0];
+		return isLocale(first) ? first : ('en' as Locale);
+	});
+	const messages = $derived(MESSAGES[resolvedLocale]);
 	const slugMaps = {
 		byLocale: getNavSlugMap(),
 		byCanonical: getNavCanonicalSlugMap()
 	};
 
 	function switchTo(code: Locale) {
-		if (code === page.params.lang) return;
+		if (code === resolvedLocale) return;
 		persistLocale(code);
 		goto(swapLocaleInPath(page.url.pathname, code, slugMaps));
 	}
@@ -33,11 +39,11 @@
 		<button
 			type="button"
 			aria-label={messages.language.switchTo[option.code]}
-			aria-pressed={page.params.lang === option.code}
+			aria-pressed={resolvedLocale === option.code}
 			onclick={() => switchTo(option.code)}
 			class={[
 				'rounded-full px-3 py-1.5 text-[10px] font-bold tracking-widest transition-colors',
-				page.params.lang === option.code
+				resolvedLocale === option.code
 					? 'bg-brand-ink text-brand-bg'
 					: 'text-brand-muted hover:text-brand-accent'
 			]}

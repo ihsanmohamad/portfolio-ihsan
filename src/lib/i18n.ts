@@ -405,7 +405,7 @@ export const MESSAGES: Record<Locale, Messages> = {
 	}
 };
 
-export function isLocale(value: string | null): value is Locale {
+export function isLocale(value: string | null | undefined): value is Locale {
 	return value === 'en' || value === 'ms-MY';
 }
 

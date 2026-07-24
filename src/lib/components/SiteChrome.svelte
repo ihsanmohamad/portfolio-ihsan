@@ -2,33 +2,48 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { getNavCanonicalSlugMap, getNavItems, getNavSlugMap } from '$lib/constants';
+	import {
+		getNavCanonicalSlugMap,
+		getNavItems,
+		getNavSlugMap,
+		getProfile,
+		getSiteFooter
+	} from '$lib/constants';
 	import LanguageToggle from './LanguageToggle.svelte';
-	import { getI18nContext, persistLocale, swapLocaleInPath, type Locale } from '$lib/i18n';
+	import {
+		MESSAGES,
+		persistLocale,
+		swapLocaleInPath,
+		isLocale,
+		type Locale,
+		type Messages
+	} from '$lib/i18n';
 	import { Menu, X, ArrowRight, Mail, Phone, Github, Linkedin, Globe } from '@lucide/svelte';
 
 	import type { Snippet } from 'svelte';
 
 	type Props = {
-		profile: { name: string; email: string; phone?: string };
-		navItems: { id: string; label: string; slug: string; external: boolean }[];
-		siteFooter: { tagline: string; socials: { label: string; url: string }[] };
 		children?: Snippet;
 	};
 
-	let { profile, navItems, siteFooter, children }: Props = $props();
+	let { children }: Props = $props();
 
-	const i18n = getI18nContext();
-	const messages = $derived(i18n.messages);
-	const locale = $derived(i18n.locale);
-	const localized = (path: string): string => `/${locale}${path === '/' ? '' : path}`;
-
-	let isMobileMenuOpen = $state(false);
-	let scrolled = $state(false);
+	const resolvedLocale: Locale = $derived.by(() => {
+		const fromParam: string | undefined = page.params.lang;
+		if (isLocale(fromParam)) return fromParam;
+		const first: string | undefined = page.url.pathname.split('/').filter(Boolean)[0];
+		return isLocale(first) ? first : ('en' as Locale);
+	});
+	const messages: Messages = $derived(MESSAGES[resolvedLocale]);
+	const profile = $derived(getProfile(resolvedLocale));
+	const navItems = $derived(getNavItems(resolvedLocale));
+	const siteFooter = $derived(getSiteFooter(resolvedLocale));
+	const localized = (path: string): string =>
+		`/${resolvedLocale}${path === '/' ? '' : path}`;
 
 	$effect(() => {
 		if (typeof document !== 'undefined') {
-			document.documentElement.lang = locale;
+			document.documentElement.lang = resolvedLocale;
 		}
 	});
 
@@ -53,14 +68,8 @@
 		void pathname;
 	});
 
-	$effect(() => {
-		if (typeof document === 'undefined') return;
-		const original = document.body.style.overflow;
-		document.body.style.overflow = isMobileMenuOpen ? 'hidden' : original;
-		return () => {
-			document.body.style.overflow = original;
-		};
-	});
+	let isMobileMenuOpen = $state(false);
+	let scrolled = $state(false);
 
 	function isActive(slug: string): boolean {
 		const path = localized(`/${slug}`);
@@ -68,7 +77,7 @@
 	}
 
 	function navigateToLocale(nextLocale: Locale) {
-		if (nextLocale === locale) return;
+		if (nextLocale === resolvedLocale) return;
 		persistLocale(nextLocale);
 		const slugMaps = {
 			byLocale: getNavSlugMap(),
@@ -94,7 +103,10 @@
 		href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap"
 		rel="stylesheet"
 	/>
-	<meta name="description" content={profile.name + ' — ' + messages.home.buildTogetherDescription} />
+	<meta
+		name="description"
+		content="{profile.name} — Open to interesting projects, freelance work, or full-time roles in AI engineering, AWS architecture, or full-stack TypeScript."
+	/>
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-brand-bg font-sans text-brand-ink">
@@ -112,10 +124,7 @@
 			style:border-width={scrolled ? '1px' : '0'}
 			style:border-color={scrolled ? 'rgba(15, 23, 42, 0.1)' : 'transparent'}
 		>
-			<a
-				href={localized('/')}
-				class="flex items-center gap-2 font-display text-lg font-bold tracking-tight"
-			>
+			<a href={localized('/')} class="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
 				<span class="rounded-sm bg-brand-ink px-2 py-0.5 text-brand-bg">I</span>
 				<span
 					class="overflow-hidden whitespace-nowrap transition-all duration-500"
@@ -179,9 +188,10 @@
 	</div>
 
 	<div
-		class="fixed inset-0 z-40 flex flex-col items-center justify-center overflow-y-auto overscroll-contain bg-brand-bg transition-all duration-500 {isMobileMenuOpen
+		class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-brand-bg transition-all duration-500 {isMobileMenuOpen
 			? 'pointer-events-auto opacity-100'
 			: 'pointer-events-none opacity-0'}"
+		class:overflow-hidden={isMobileMenuOpen}
 	>
 		<button
 			type="button"
@@ -192,9 +202,7 @@
 			<X size={32} />
 		</button>
 		<div class="flex flex-col space-y-6 text-center">
-			<a
-				href={localized('/')}
-				class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
+			<a href={localized('/')} class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>{messages.nav.home}</a
 			>
 			{#each navItems as item (item.id)}
@@ -216,7 +224,7 @@
 		</div>
 	</div>
 
-	<main class="grow pt-24">
+	<main class="grow pt-24" class:overflow-hidden={isMobileMenuOpen}>
 		{@render children?.()}
 	</main>
 

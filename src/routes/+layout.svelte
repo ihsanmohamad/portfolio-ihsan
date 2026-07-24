@@ -1,22 +1,19 @@
 <script lang="ts">
 	import './layout.css';
-	import { page } from '$app/state';
-	import { getProfile, getSiteFooter } from '$lib/constants';
 	import SiteChrome from '$lib/components/SiteChrome.svelte';
+	import { page } from '$app/state';
 	import {
 		MESSAGES,
+		isLocale,
 		setI18nContext,
 		type I18nContext,
 		type Locale
 	} from '$lib/i18n';
-	import { getNavItems } from '$lib/constants';
 
 	let { children } = $props();
 
+	// Root always renders English — there's no locale in the URL.
 	const locale = $derived('en' as Locale);
-	const profile = $derived(getProfile(locale));
-	const navItems = $derived(getNavItems(locale));
-	const siteFooter = $derived(getSiteFooter(locale));
 	const messages = $derived(MESSAGES[locale]);
 
 	const i18n: I18nContext = {
@@ -28,7 +25,7 @@
 		},
 		localized: (path: string) => `/${locale}${path === '/' ? '' : path}`,
 		setLocale: () => {
-			/* Root page is always English; LanguageToggle is rendered disabled-style */
+			/* LanguageToggle owns the toggle */
 		}
 	};
 
@@ -36,10 +33,10 @@
 </script>
 
 <svelte:head>
-	<title>{profile.name} — {profile.tagline}</title>
-	<meta name="description" content={profile.summary} />
+	<title>Ihsan Mohamad — Open to interesting projects</title>
+	<meta name="description" content={messages.home.buildTogetherDescription} />
 </svelte:head>
 
-<SiteChrome {profile} {navItems} {siteFooter}>
+<SiteChrome>
 	{@render children()}
 </SiteChrome>
