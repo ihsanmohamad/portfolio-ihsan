@@ -13,9 +13,7 @@
 	const i18n = getI18nContext();
 	const locale = $derived(i18n.locale);
 	const canonical = $derived(data.canonical);
-	const canonicalHref = $derived(
-		`${SITE_ORIGIN}/${locale}/${defaultSlugFor(canonical)}`
-	);
+	const canonicalHref = $derived(`${SITE_ORIGIN}/${locale}/${defaultSlugFor(canonical)}`);
 </script>
 
 <svelte:head>

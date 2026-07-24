@@ -8,9 +8,7 @@
 	const locale = $derived(page.params.lang as Locale);
 	const isValidLocale = $derived(isLocale(locale));
 
-	const canonical = $derived(
-		SITE_ORIGIN + (isValidLocale ? `/${locale}/` : '/en/')
-	);
+	const canonical = $derived(SITE_ORIGIN + (isValidLocale ? `/${locale}/` : '/en/'));
 </script>
 
 <svelte:head>

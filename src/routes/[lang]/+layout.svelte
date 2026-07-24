@@ -1,12 +1,7 @@
 <script lang="ts">
 	import './../layout.css';
 	import { page } from '$app/state';
-	import {
-		MESSAGES,
-		setI18nContext,
-		type I18nContext,
-		type Locale
-	} from '$lib/i18n';
+	import { MESSAGES, setI18nContext, type I18nContext, type Locale } from '$lib/i18n';
 
 	let { children } = $props();
 

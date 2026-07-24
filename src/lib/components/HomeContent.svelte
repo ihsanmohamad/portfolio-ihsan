@@ -164,9 +164,12 @@
 <section class="border-t border-brand-border py-32">
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="mb-16 max-w-3xl">
-			<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">{messages.common.stack}</p>
+			<p class="mb-4 text-xs font-bold tracking-widest text-brand-muted uppercase">
+				{messages.common.stack}
+			</p>
 			<h2 class="mb-6 font-display text-4xl font-bold text-brand-ink md:text-5xl">
-				{messages.home.toolsHeadingStart} <span class="font-normal italic">{messages.home.toolsHeadingEmphasis}</span>
+				{messages.home.toolsHeadingStart}
+				<span class="font-normal italic">{messages.home.toolsHeadingEmphasis}</span>
 			</h2>
 			<p class="text-lg text-brand-muted">
 				{messages.home.toolsDescription}
@@ -194,9 +197,12 @@
 	<div class="container mx-auto px-6 md:px-12">
 		<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 			<div>
-				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">{messages.common.experience}</p>
+				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">
+					{messages.common.experience}
+				</p>
 				<h2 class="mb-10 font-display text-4xl font-bold md:text-5xl">
-					{messages.home.whereWorkedStart} <span class="font-normal italic">{messages.home.whereWorkedEmphasis}</span>
+					{messages.home.whereWorkedStart}
+					<span class="font-normal italic">{messages.home.whereWorkedEmphasis}</span>
 				</h2>
 
 				<div class="space-y-8">
@@ -204,7 +210,9 @@
 						<div>
 							<p class="mb-1 font-display text-xl font-bold">{job.role}</p>
 							<p class="text-sm text-brand-bg/70">
-								{job.company} · {job.startDate} – {job.current ? messages.common.present : job.endDate}
+								{job.company} · {job.startDate} – {job.current
+									? messages.common.present
+									: job.endDate}
 							</p>
 						</div>
 					{/each}
@@ -219,9 +227,12 @@
 			</div>
 
 			<div>
-				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">{messages.common.recognition}</p>
+				<p class="mb-4 text-xs font-bold tracking-widest text-brand-bg/60 uppercase">
+					{messages.common.recognition}
+				</p>
 				<h2 class="mb-10 font-display text-4xl font-bold md:text-5xl">
-					{messages.home.proudMomentsStart} <span class="font-normal italic">{messages.home.proudMomentsEmphasis}</span>
+					{messages.home.proudMomentsStart}
+					<span class="font-normal italic">{messages.home.proudMomentsEmphasis}</span>
 				</h2>
 				<div class="space-y-6">
 					{#each [...certifications, ...awards] as item (item.id)}
@@ -247,7 +258,8 @@
 	<div class="container mx-auto px-6 text-center md:px-12">
 		<div class="mx-auto max-w-2xl">
 			<h2 class="mb-8 font-display text-4xl font-bold text-brand-ink md:text-6xl">
-				{messages.home.buildTogetherStart} <span class="font-normal italic">{messages.home.buildTogetherEmphasis}</span>
+				{messages.home.buildTogetherStart}
+				<span class="font-normal italic">{messages.home.buildTogetherEmphasis}</span>
 			</h2>
 			<p class="mb-12 text-lg text-brand-muted">
 				{messages.home.buildTogetherDescription}

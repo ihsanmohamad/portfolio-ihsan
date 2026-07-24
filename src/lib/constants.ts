@@ -172,14 +172,14 @@ const footerModules = import.meta.glob<FooterFile>(
 
 type CategoryFile = Omit<Category, 'id'>;
 
-const categoryBase = import.meta.glob<CategoryFile>(
-	'../content/categories/*.yaml',
-	{ eager: true, import: 'default' }
-);
-const categoryMs = import.meta.glob<CategoryFile>(
-	'../content/categories/ms-MY/*.yaml',
-	{ eager: true, import: 'default' }
-);
+const categoryBase = import.meta.glob<CategoryFile>('../content/categories/*.yaml', {
+	eager: true,
+	import: 'default'
+});
+const categoryMs = import.meta.glob<CategoryFile>('../content/categories/ms-MY/*.yaml', {
+	eager: true,
+	import: 'default'
+});
 
 const experienceBase = import.meta.glob<Experience>('../content/experience/*.json', {
 	eager: true,

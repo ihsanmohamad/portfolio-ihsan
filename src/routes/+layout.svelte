@@ -2,13 +2,7 @@
 	import './layout.css';
 	import SiteChrome from '$lib/components/SiteChrome.svelte';
 	import { page } from '$app/state';
-	import {
-		MESSAGES,
-		isLocale,
-		setI18nContext,
-		type I18nContext,
-		type Locale
-	} from '$lib/i18n';
+	import { MESSAGES, isLocale, setI18nContext, type I18nContext, type Locale } from '$lib/i18n';
 
 	let { children } = $props();
 

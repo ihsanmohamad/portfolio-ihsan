@@ -44,13 +44,13 @@ appears to need a server, it's wrong — solve it at build time.
 
 Two URL shapes only:
 
-| Shape                      | Example                                 | Source                                         |
-| -------------------------- | --------------------------------------- | ---------------------------------------------- |
-| `/[lang]/<slug>`           | `/en/about`, `/ms-MY/tentang`            | `site/{{locale}}/nav.yaml` slug field          |
-| `/[lang]/projects/[slug]`  | `/en/projects/palm-management`          | `content/projects/{{locale}}/*.md` frontmatter |
+| Shape                     | Example                        | Source                                         |
+| ------------------------- | ------------------------------ | ---------------------------------------------- |
+| `/[lang]/<slug>`          | `/en/about`, `/ms-MY/tentang`  | `site/{{locale}}/nav.yaml` slug field          |
+| `/[lang]/projects/[slug]` | `/en/projects/palm-management` | `content/projects/{{locale}}/*.md` frontmatter |
 
 **Every page is generated from CMS data.** No hard-coded content in TS files
-(except UI chrome strings in `src/lib/i18n.ts` — those are *translations* of
+(except UI chrome strings in `src/lib/i18n.ts` — those are _translations_ of
 fixed UI labels, not page content).
 
 `src/routes/[lang]/[slug]/+page.ts` is the dispatcher:
@@ -114,7 +114,7 @@ inject redirects.
 - **Default locale is `en`** and is **always URL-prefixed** (`/en/...`), not
   served at the root. The root `/` is a meta-refresh redirect to `/en/`.
 - **All UI chrome strings** (nav labels, headings, CTAs) come from
-  `MESSAGES[locale]` in `src/lib/i18n.ts`. This is the *only* file that contains
+  `MESSAGES[locale]` in `src/lib/i18n.ts`. This is the _only_ file that contains
   hard-coded page copy. Add a new string by extending the `Messages` interface
   and both `MESSAGES.en` and `MESSAGES['ms-MY']`.
 - **Content (profile summary, experience, projects, blog posts, etc.) is never
@@ -131,7 +131,7 @@ Malay `tentang`). The slug is the URL segment in that locale.
 - `[lang]/[slug]/+page.ts` uses it to resolve the canonical page from the slug
   in the URL.
 - When the user clicks the language toggle, `swapLocaleInPath(path, next, slugMap)`
-  in `src/lib/i18n.ts` substitutes both the locale *and* the slug, so toggling
+  in `src/lib/i18n.ts` substitutes both the locale _and_ the slug, so toggling
   EN↔BM at `/en/about` takes you to `/ms-MY/tentang` (and vice versa).
 - If a user visits `/en/projects/palm-management`, that's a project-detail URL
   handled by the project-specific route — not the slug dispatcher.

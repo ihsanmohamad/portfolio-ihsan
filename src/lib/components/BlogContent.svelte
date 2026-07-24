@@ -45,34 +45,34 @@
 		{:else}
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 				{#each posts as post (post.slug)}
-				<a
-					href={i18n.localized(`/blog/${post.slug}`)}
-					class="group flex flex-col rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
-				>
-					<div class="mb-3 flex flex-wrap gap-2">
-						{#each (post.category ?? []).map((id) => categoryById.get(id)).filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
-							<span
-								class="text-xs font-bold tracking-widest text-brand-accent uppercase"
-							>
-								{cat.title}
-							</span>
-						{/each}
-					</div>
-					<h2
-						class="mb-3 flex-1 font-display text-xl font-bold text-brand-ink transition-colors group-hover:text-brand-accent"
+					<a
+						href={i18n.localized(`/blog/${post.slug}`)}
+						class="group flex flex-col rounded-2xl border border-brand-border bg-white p-6 transition-colors hover:border-brand-accent"
 					>
-						{post.title}
-					</h2>
-					<p class="mb-4 text-sm text-brand-muted">{post.excerpt}</p>
-					<div class="flex items-center justify-between text-xs text-brand-muted">
-						<span>{post.publishedAt}</span>
-						<span>{post.readingMinutes} {messages.blog.minuteRead}</span>
-					</div>
-					<ArrowRight
-						size={16}
-						class="mt-4 self-end text-brand-ink transition-colors group-hover:text-brand-accent"
-					/>
-				</a>
+						<div class="mb-3 flex flex-wrap gap-2">
+							{#each (post.category ?? [])
+								.map((id) => categoryById.get(id))
+								.filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
+								<span class="text-xs font-bold tracking-widest text-brand-accent uppercase">
+									{cat.title}
+								</span>
+							{/each}
+						</div>
+						<h2
+							class="mb-3 flex-1 font-display text-xl font-bold text-brand-ink transition-colors group-hover:text-brand-accent"
+						>
+							{post.title}
+						</h2>
+						<p class="mb-4 text-sm text-brand-muted">{post.excerpt}</p>
+						<div class="flex items-center justify-between text-xs text-brand-muted">
+							<span>{post.publishedAt}</span>
+							<span>{post.readingMinutes} {messages.blog.minuteRead}</span>
+						</div>
+						<ArrowRight
+							size={16}
+							class="mt-4 self-end text-brand-ink transition-colors group-hover:text-brand-accent"
+						/>
+					</a>
 				{/each}
 			</div>
 		{/if}

@@ -38,8 +38,7 @@
 	const profile = $derived(getProfile(resolvedLocale));
 	const navItems = $derived(getNavItems(resolvedLocale));
 	const siteFooter = $derived(getSiteFooter(resolvedLocale));
-	const localized = (path: string): string =>
-		`/${resolvedLocale}${path === '/' ? '' : path}`;
+	const localized = (path: string): string => `/${resolvedLocale}${path === '/' ? '' : path}`;
 
 	$effect(() => {
 		if (typeof document !== 'undefined') {
@@ -124,7 +123,10 @@
 			style:border-width={scrolled ? '1px' : '0'}
 			style:border-color={scrolled ? 'rgba(15, 23, 42, 0.1)' : 'transparent'}
 		>
-			<a href={localized('/')} class="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+			<a
+				href={localized('/')}
+				class="flex items-center gap-2 font-display text-lg font-bold tracking-tight"
+			>
 				<span class="rounded-sm bg-brand-ink px-2 py-0.5 text-brand-bg">I</span>
 				<span
 					class="overflow-hidden whitespace-nowrap transition-all duration-500"
@@ -202,7 +204,9 @@
 			<X size={32} />
 		</button>
 		<div class="flex flex-col space-y-6 text-center">
-			<a href={localized('/')} class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
+			<a
+				href={localized('/')}
+				class="font-display text-4xl font-bold transition-colors hover:text-brand-accent"
 				>{messages.nav.home}</a
 			>
 			{#each navItems as item (item.id)}

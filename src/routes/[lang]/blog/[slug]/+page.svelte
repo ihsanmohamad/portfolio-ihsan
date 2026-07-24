@@ -23,7 +23,9 @@
 			Back
 		</a>
 		<div class="mb-4 flex flex-wrap gap-2">
-			{#each (data.post.category ?? []).map((id) => categoryById.get(id)).filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
+			{#each (data.post.category ?? [])
+				.map((id) => categoryById.get(id))
+				.filter((c): c is NonNullable<typeof c> => c !== undefined) as cat (cat.id)}
 				<span class="text-xs font-bold tracking-widest text-brand-accent uppercase">
 					{cat.title}
 				</span>
